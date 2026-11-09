@@ -1,0 +1,40 @@
+name: Cálculos de SERS
+
+# Roda o cálculo energético no GitHub a cada envio (ou pelo botão "Run workflow")
+# e mostra os resultados no resumo da execução.
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  calcular:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Rodar calculo_energia.py
+        working-directory: sers
+        run: python calculos/calculo_energia.py
+      - name: Publicar o resumo dos resultados
+        working-directory: sers
+        run: |
+          python - >> "$GITHUB_STEP_SUMMARY" <<'PY'
+          import json
+          r = json.load(open("calculos/resultados.json", encoding="utf-8"))
+          def br(x, d=0):
+              return f"{x:,.{d}f}".replace(",", "X").replace(".", ",").replace("X", ".")
+          nomes = {"A0": "Hoje (vapor de sódio)", "A1": "A1 · LED + sensores", "A2": "A2 · Solar autônoma", "A3": "A3 · LED + solar na rede (recomendada)"}
+          print("## Resultados do cálculo energético (rodado agora pelo GitHub Actions)\n")
+          print("Praça comunitária com 12 postes · mês de 30 dias · E = (P × t) ÷ 1000\n")
+          print("| Cenário | Consumo da rede (kWh/mês) | Economia | Custo de energia (R$/mês) | Renovável | CO₂ evitado (kg/ano) | Investimento | Retorno |")
+          print("|---|---:|---:|---:|---:|---:|---:|---:|")
+          for c in r["cenarios"]:
+              pb = br(c["payback_anos"], 1) + " anos" if c["payback_anos"] else "—"
+              print(f"| {nomes[c['codigo']]} | {br(c['consumo_rede_kwh_mes'], 1)} | {br(c['economia_rede_pct'], 1)}% | R$ {br(c['custo_energia_mes'], 2)} | {br(c['participacao_renovavel_pct'], 1)}% | {br(c['emissoes_evitadas_kgco2_ano'], 0)} | R$ {br(c['capex'])} | {pb} |")
+          print("\nTodos os valores são projeções condicionadas às premissas de `sers/dados/premissas.json`.")
+          print("\n<details><summary>Memória de cálculo completa</summary>\n")
+          print(open("calculos/memoria_de_calculo.md", encoding="utf-8").read())
+          print("\n</details>")
+          PY
