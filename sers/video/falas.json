@@ -1,0 +1,62 @@
+{
+  "_como_funciona": "Fonte das falas do video. Cada cena aqui corresponde a uma cena do modo apresentacao (dashboard/index.html, mesmo 'id'). Os trechos {{...}} sao preenchidos com os numeros calculados (A0..A3 = cenarios; p = parametros), entao fala e tela sempre batem. Texto entre colchetes [ ] e uma acao na tela, nao e para ler. Depois de editar, rode: python calculos/calculo_energia.py",
+  "palavras_por_segundo": 2.4,
+  "pausa_entre_cenas_s": 1,
+  "limite_video_s": 180,
+  "cenas": [
+    {
+      "id": "capa",
+      "titulo": "Abertura",
+      "acao": "Comece a gravação já nesta tela e fale assim que ela começar.",
+      "fala": "Olá! Somos o Grupo 5. Esta é a nossa solução de energia para uma praça comunitária."
+    },
+    {
+      "id": "problema",
+      "titulo": "O espaço e o problema",
+      "acao": "Só fale. A tela mostra a praça de madrugada, vazia e com os postes no máximo.",
+      "fala": "Escolhemos uma praça de bairro em São Paulo, com {{p.pontos|0}} postes de vapor de sódio. Eles ficam no máximo a noite toda, mesmo com a praça vazia, e ninguém sabe quando uma lâmpada queima. Quem ganha com a melhoria: os moradores e a prefeitura, que paga a conta."
+    },
+    {
+      "id": "consumo",
+      "titulo": "Quanto a praça gasta hoje",
+      "acao": "Só fale. A conta aparece passo a passo, de cima para baixo.",
+      "fala": "Para o consumo, usamos E igual a P vezes t, dividido por mil. Com {{p.p_atual_w|0}} watts por quase 12 horas, os {{p.pontos|0}} postes gastam {{A0.consumo_rede_kwh_mes|0}} quilowatts-hora por mês: {{A0.custo_energia_mes|0}} reais na conta."
+    },
+    {
+      "id": "sensor",
+      "titulo": "LED com sensor de presença",
+      "acao": "Só fale. Uma pessoa atravessa a praça e os postes perto dela acendem.",
+      "fala": "A solução começa com LED de {{p.p_led_w|0}} watts e sensor de presença. Até as {{p.hora_fim_intenso|0}} horas, luz total. Depois, cai para {{p.dim_pct|0}}% e volta a 100% quando alguém passa. O consumo cai {{A1.economia_rede_pct|0}}%."
+    },
+    {
+      "id": "alternativas",
+      "titulo": "Três alternativas",
+      "acao": "Só fale. Os três cartões e o custo em 10 anos já estão na tela.",
+      "fala": "Comparamos três alternativas para a mesma iluminação. A1 é a mais barata, mas usa só a rede. A2 é 100% solar, com bateria em cada poste, mas leva {{A2.payback_anos|0}} anos para se pagar. A3 soma painéis no quiosque: {{A3.participacao_renovavel_pct|0}}% renovável, com retorno em {{A3.payback_anos|1}} anos. É a nossa escolha."
+    },
+    {
+      "id": "diagrama",
+      "titulo": "Diagrama da solução",
+      "acao": "Só fale. As camadas aparecem de cima para baixo.",
+      "fala": "No diagrama, a energia da rede e dos painéis alimenta as luminárias. Sensores mandam dados para um ESP32 em cada poste, que controla a luz, e esses dados viram os indicadores do dashboard."
+    },
+    {
+      "id": "dashboard",
+      "titulo": "Indicadores no dashboard",
+      "acao": "Clique em A1, A2 e A3 nos momentos marcados (ou aperte 1, 2 e 3).",
+      "fala": "No dashboard, [clique em A1] cada alternativa mostra seus indicadores: consumo, economia, custo, energia renovável, CO₂ evitado e horas em modo econômico. [clique em A2] Na A2, tudo vem do sol. [clique em A3] Na A3, {{A3.participacao_renovavel_pct|0}}% renovável e {{A3.economia_rs_mes|0}} reais a menos por mês. O monitoramento é simulado."
+    },
+    {
+      "id": "beneficios",
+      "titulo": "Benefícios e limitações",
+      "acao": "Só fale. Benefícios à esquerda, limitações à direita.",
+      "fala": "Benefícios: menos gasto, luz branca quando tem gente, aviso de falha e fim do mercúrio. Limitações: a praça é um caso de referência, os preços são estimativas e, sem energia na rede, a A3 também apaga."
+    },
+    {
+      "id": "fim",
+      "titulo": "Encerramento",
+      "acao": "Depois de falar, espere 2 segundos em silêncio e pare a gravação.",
+      "fala": "Esses números são projeções baseadas nas nossas premissas; os detalhes estão no GitHub. Obrigado!"
+    }
+  ]
+}

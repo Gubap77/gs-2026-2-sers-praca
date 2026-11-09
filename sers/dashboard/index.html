@@ -1,0 +1,1284 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Praça Comunitária Solar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="fontes.css">
+<style>
+/* Layout: painel cívico com faixa noturna no topo (o mesmo céu do palco), seletor + 7 indicadores, grade de gráficos e tabela.
+   Modo apresentação: palco 16:9 de 1600×900, noturno nos dois temas, escalado para caber em qualquer tela. */
+:root {
+  --f-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --bg: #f2f4f7;
+  --surface: #ffffff;
+  --surface-2: #f7f8fa;
+  --ink: #101828;
+  --ink-2: #475467;
+  --muted: #7b8494;
+  --line: #e2e6ec;
+  --axis: #c3c9d3;
+  --ring: rgba(16, 24, 40, 0.10);
+  --focus: #2a78d6;
+  --hoje: #8b919c;
+  --novo: #15a06e;
+  --rede: #2a78d6;
+  --solar: #c98500;
+  --novo-wash: rgba(21, 160, 110, 0.10);
+  --good-ink: #0b7a4f;
+  --sombra: 0 1px 2px rgba(16, 24, 40, 0.06);
+
+  /* palco noturno: igual nos dois temas */
+  --n-sky: #05080f;
+  --n-stage: #0a1120;
+  --n-card: #101a2d;
+  --n-card-2: #152139;
+  --n-line: #22304a;
+  --n-axis: #34435f;
+  --n-borda: rgba(238, 242, 248, 0.20);
+  --n-barra: rgba(10, 17, 32, 0.88);
+  --n-ink: #eef2f8;
+  --n-ink-2: #a9b5c8;
+  --n-muted: #74819a;
+  --n-hoje: #8f97a5;
+  --n-novo: #1fae7b;
+  --n-rede: #3987e5;
+  --n-solar: #c98500;
+  --n-novo-wash: rgba(31, 174, 123, 0.16);
+  --sodio: #ffad33;
+  --led: #e6eeff;
+  --deixa: #ffad33;
+
+  /* desenho da praça */
+  --calcada: #121b2b;
+  --grama: #0c1f1c;
+  --piso: #1b2638;
+  --piso-2: #2a3850;
+  --arvore: #10302a;
+  --arvore-2: #17433a;
+  --quadra: #13293f;
+  --quadra-linha: #2f4f70;
+  --quiosque: #1c283b;
+  --quiosque-linha: #34445e;
+  --painel: #1d3b66;
+  --painel-linha: #4c7fc2;
+  --banco: #39465c;
+  --poste: #f2f5fb;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0f16; --surface: #121823; --surface-2: #161d2a; --ink: #edf1f7; --ink-2: #a8b2c3; --muted: #7d889b;
+    --line: #232c3b; --axis: #364254; --ring: rgba(255, 255, 255, 0.09); --focus: #6aa7f0;
+    --hoje: #8f97a5; --novo: #1fae7b; --rede: #3987e5; --solar: #c98500; --novo-wash: rgba(31, 174, 123, 0.15);
+    --good-ink: #3ccb92; --sombra: none; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b0f16; --surface: #121823; --surface-2: #161d2a; --ink: #edf1f7; --ink-2: #a8b2c3; --muted: #7d889b;
+  --line: #232c3b; --axis: #364254; --ring: rgba(255, 255, 255, 0.09); --focus: #6aa7f0;
+  --hoje: #8f97a5; --novo: #1fae7b; --rede: #3987e5; --solar: #c98500; --novo-wash: rgba(31, 174, 123, 0.15);
+  --good-ink: #3ccb92; --sombra: none; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--f-body); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+h1, h2, h3 { text-wrap: balance; }
+.icone { width: 1em; height: 1em; flex: none; }
+
+/* tokens dos gráficos: no painel seguem o tema; no palco, a noite */
+.vista { --c-hoje: var(--hoje); --c-novo: var(--novo); --c-rede: var(--rede); --c-solar: var(--solar); --c-ink: var(--ink); --c-ink2: var(--ink-2); --c-muted: var(--muted); --c-grid: var(--line); --c-axis: var(--axis); --c-surface: var(--surface); --c-good: var(--good-ink); --c-wash: var(--novo-wash); }
+.palco, .gaveta { --c-hoje: var(--n-hoje); --c-novo: var(--n-novo); --c-rede: var(--n-rede); --c-solar: var(--n-solar); --c-ink: var(--n-ink); --c-ink2: var(--n-ink-2); --c-muted: var(--n-muted); --c-grid: var(--n-line); --c-axis: var(--n-axis); --c-surface: var(--n-card); --c-good: var(--n-novo); --c-wash: var(--n-novo-wash); }
+
+/* ---------- faixa noturna (topo do painel e do roteiro) ---------- */
+.faixa { background: radial-gradient(900px 380px at 82% 0%, rgba(230, 238, 255, 0.09), transparent 62%), var(--n-stage); color: var(--n-ink); }
+.faixa-in { max-width: 1240px; margin: 0 auto; padding-block: 40px 38px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 28px 40px; align-items: center; }
+.faixa-in > * { min-width: 0; }
+.faixa-curta .faixa-in { grid-template-columns: 1fr; padding-block: 28px 30px; }
+@media (max-width: 880px) { .faixa-in { grid-template-columns: 1fr; } .faixa-ilus { max-width: 520px; } }
+.olho { font: 600 12.5px/1.35 var(--f-body); letter-spacing: 0.13em; text-transform: uppercase; margin: 0 0 10px; color: var(--muted); }
+.faixa .olho { color: var(--n-ink-2); }
+.faixa h1 { font: 700 clamp(46px, 7vw, 80px)/0.94 var(--f-display); margin: 0; letter-spacing: 0.004em; }
+.faixa h1 em { display: block; font-style: normal; color: var(--n-ink-2); font-weight: 500; }
+.faixa-sub { color: var(--n-ink-2); max-width: 58ch; margin: 16px 0 22px; font-size: 17px; }
+.acoes { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn { display: inline-flex; align-items: center; gap: 9px; border-radius: 999px; padding: 11px 18px; font: 600 15px/1 var(--f-body); text-decoration: none; cursor: pointer; border: 1px solid transparent; background: none; }
+.btn-luz { background: var(--led); color: var(--n-stage); box-shadow: 0 0 0 4px rgba(230, 238, 255, 0.10), 0 8px 30px rgba(230, 238, 255, 0.16); }
+.btn-luz:hover { background: #ffffff; }
+.btn-fantasma { color: var(--n-ink); border-color: var(--n-borda); }
+.btn-fantasma:hover { background: rgba(238, 242, 248, 0.07); }
+.faixa-ilus svg { display: block; width: 100%; height: auto; }
+
+/* ---------- painel ---------- */
+.miolo { max-width: 1240px; margin: 0 auto; padding-block: 26px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 20px; }
+.bloco { background: var(--surface); border: 1px solid var(--ring); border-radius: 14px; padding: 22px; box-shadow: var(--sombra); min-width: 0; }
+.bloco-topo { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: flex-end; justify-content: space-between; }
+.vista h2 { font: 600 30px/1.05 var(--f-display); margin: 0; letter-spacing: 0.01em; }
+.vista h3 { font: 600 16px/1.3 var(--f-body); margin: 0; }
+.sub { color: var(--ink-2); font-size: 14px; margin: 4px 0 0; }
+.seletor { display: inline-flex; flex-wrap: wrap; gap: 4px; background: var(--surface-2); border: 1px solid var(--ring); border-radius: 12px; padding: 4px; }
+.seletor button { border: 0; background: transparent; border-radius: 9px; padding: 9px 14px; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--ink-2); display: inline-flex; gap: 8px; align-items: center; }
+.seletor button:hover { color: var(--ink); }
+.seletor button[aria-checked="true"] { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1px var(--ring), 0 1px 3px rgba(16, 24, 40, 0.10); }
+.seletor .cod { font-family: var(--f-mono); font-weight: 500; font-size: 12.5px; color: var(--muted); }
+.chip-rec { font: 700 10.5px/1 var(--f-body); letter-spacing: 0.07em; text-transform: uppercase; color: var(--c-good); background: var(--c-wash); padding: 4px 7px; border-radius: 999px; white-space: nowrap; }
+.alt-desc { color: var(--ink-2); font-size: 14.5px; margin: 14px 0 0; }
+.tiles { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.tiles > .tile { flex: 1 1 230px; }
+.tile { border: 1px solid var(--ring); border-radius: 12px; padding: 14px 16px; background: var(--surface-2); display: grid; gap: 4px; align-content: start; min-width: 0; }
+.tile .k { font-size: 13px; color: var(--ink-2); margin: 0; }
+.tile .v { margin: 0; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.tile .v b { font: 650 29px/1.1 var(--f-body); letter-spacing: -0.01em; }
+.tile .v small { font-size: 13.5px; color: var(--ink-2); font-weight: 500; }
+.tile .d { font-size: 12.5px; color: var(--muted); margin: 2px 0 0; }
+.delta { color: var(--c-good); font-weight: 650; }
+.grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); gap: 20px; }
+.legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); margin: 10px 0 6px; }
+.legenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.legenda i.linha { height: 2px; width: 14px; border-radius: 0; vertical-align: 3px; }
+.graf { position: relative; width: 100%; }
+.graf svg { display: block; width: 100%; height: auto; overflow: visible; }
+.graf svg text { font-family: var(--f-body); }
+.tabela-wrap { overflow-x: auto; margin-top: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; white-space: normal; min-width: 210px; }
+thead th { color: var(--ink-2); font-weight: 600; font-size: 13px; border-bottom-color: var(--axis); vertical-align: bottom; }
+thead th .chip-rec { display: inline-block; margin-top: 4px; }
+td.rec, th.rec { background: var(--novo-wash); }
+.nota { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 110ch; }
+.nota a { color: var(--ink-2); }
+
+/* ---------- roteiro ---------- */
+.passos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 12px; margin: 14px 0 0; padding: 0; list-style: none; counter-reset: passo; }
+.passos li { background: var(--surface-2); border: 1px solid var(--ring); border-radius: 12px; padding: 14px 16px; font-size: 14.5px; color: var(--ink-2); counter-increment: passo; }
+.passos li::before { content: counter(passo); display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--surface); font: 700 13px/1 var(--f-body); margin-right: 8px; }
+.passos b, .passos kbd { color: var(--ink); }
+kbd { font: 500 12.5px/1 var(--f-mono); border: 1px solid var(--axis); border-bottom-width: 2px; border-radius: 5px; padding: 2px 6px; background: var(--surface); }
+.falas { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.fala-item { display: grid; grid-template-columns: 62px minmax(0, 1fr); gap: 4px 16px; background: var(--surface); border: 1px solid var(--ring); border-radius: 14px; padding: 18px 20px; box-shadow: var(--sombra); }
+.fala-num { grid-row: span 3; font: 700 44px/0.9 var(--f-display); color: var(--muted); }
+.fala-cab { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+.fala-cab h3 { font: 600 22px/1.15 var(--f-display); letter-spacing: 0.01em; }
+.fala-tempo { font: 500 13px/1 var(--f-mono); color: var(--muted); }
+.fala-acao { font-size: 13.5px; color: var(--muted); margin: 0; }
+.fala-txt { font-size: 19px; line-height: 1.55; margin: 6px 0 0; max-width: 70ch; }
+.deixa { display: inline-block; font: 700 0.62em/1 var(--f-body); letter-spacing: 0.05em; text-transform: uppercase; background: var(--deixa); color: var(--n-stage); border-radius: 6px; padding: 0.38em 0.55em; vertical-align: 0.18em; white-space: nowrap; }
+@media (max-width: 560px) { .fala-item { grid-template-columns: 1fr; } .fala-num { grid-row: auto; font-size: 30px; } }
+
+/* ---------- apresentação ---------- */
+html.apresentando, html.apresentando body { overflow: hidden; }
+.apres { position: fixed; inset: 0; background: var(--n-sky); z-index: 50; color: var(--n-ink); }
+.apres.ocioso { cursor: none; }
+.palco { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; transform: translate(-50%, -50%) scale(var(--s, 0.5)); transform-origin: center; overflow: hidden;
+  background: radial-gradient(1100px 520px at 78% -8%, rgba(230, 238, 255, 0.08), transparent 60%), radial-gradient(700px 400px at 0% 110%, rgba(255, 173, 51, 0.05), transparent 60%), var(--n-stage); font-family: var(--f-body); }
+.cena { position: absolute; inset: 0; padding: 64px 88px 72px; display: none; }
+.cena.ativa { display: flex; flex-direction: column; gap: 30px; }
+.cena .olho { color: var(--n-ink-2); font-size: 16px; margin-bottom: 12px; }
+.cena h2 { font: 600 58px/1.0 var(--f-display); margin: 0; letter-spacing: 0.004em; color: var(--n-ink); max-width: 30ch; }
+.cena.ativa .ent { animation: entra 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: var(--d, 0ms); }
+@keyframes entra { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.n-card { background: var(--n-card); border: 1px solid var(--n-line); border-radius: 18px; }
+.selo { position: absolute; font: 600 15px/1 var(--f-body); background: var(--n-barra); border: 1px solid var(--n-borda); color: var(--n-ink); padding: 9px 13px; border-radius: 999px; white-space: nowrap; display: inline-flex; gap: 8px; align-items: center; }
+.selo .ponto { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.fig-praca { position: relative; margin: 0; }
+.fig-praca svg { display: block; width: 100%; height: auto; }
+
+/* capa */
+.cena-capa.ativa { flex-direction: row; align-items: center; gap: 48px; padding-right: 64px; }
+.capa-txt { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
+.capa-txt h1 { font: 700 156px/0.84 var(--f-display); margin: 0 0 30px; letter-spacing: -0.005em; color: var(--n-ink); }
+.capa-txt h1 span { display: block; color: var(--led); text-shadow: 0 0 40px rgba(230, 238, 255, 0.25); }
+.capa-tese { font-size: 28px; line-height: 1.35; color: var(--n-ink-2); margin: 0 0 30px; max-width: 24ch; }
+.capa-desafio { font-size: 17px; color: var(--n-muted); margin: 0 0 34px; }
+.capa-grupo { display: flex; flex-wrap: wrap; gap: 8px 10px; max-width: 640px; }
+.capa-grupo b { font: 700 15px/1 var(--f-body); letter-spacing: 0.1em; text-transform: uppercase; color: var(--n-ink); padding: 9px 0; margin-right: 6px; }
+.capa-grupo span { font-size: 15px; color: var(--n-ink-2); border: 1px solid var(--n-line); border-radius: 999px; padding: 7px 13px; }
+.capa-ilus { flex: 0 0 700px; }
+
+/* problema */
+.prob { display: grid; grid-template-columns: 760px 1fr; gap: 48px; align-items: start; flex: 1; }
+.fatos { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.fato { padding: 20px 22px; }
+.fato b { display: block; font: 650 46px/1 var(--f-body); letter-spacing: -0.015em; color: var(--n-ink); margin-bottom: 8px; }
+.fato b small { font-size: 22px; font-weight: 600; color: var(--n-ink-2); margin-left: 4px; }
+.fato span { font-size: 17px; color: var(--n-ink-2); line-height: 1.35; display: block; }
+.publico { margin-top: 18px; padding: 20px 22px; font-size: 19px; line-height: 1.45; color: var(--n-ink-2); }
+.publico strong { color: var(--n-ink); }
+
+/* consumo */
+.consumo { display: grid; grid-template-columns: 1fr 470px; gap: 36px; flex: 1; align-items: start; }
+.eq { padding: 10px 30px; }
+.eq-linha { display: grid; grid-template-columns: 150px 1fr; gap: 4px 18px; padding: 17px 0; border-bottom: 1px solid var(--n-line); align-items: baseline; }
+.eq-linha:last-child { border-bottom: 0; }
+.eq-rot { font: 600 14px/1.2 var(--f-body); letter-spacing: 0.1em; text-transform: uppercase; color: var(--n-muted); }
+.eq-linha code { font: 500 30px/1.25 var(--f-mono); color: var(--n-ink); }
+.eq-linha code em { font-style: normal; color: var(--n-ink-2); }
+.eq-nota { grid-column: 2; font-size: 15.5px; color: var(--n-muted); }
+.eq-linha.final code { color: var(--sodio); font-weight: 500; }
+.estim { padding: 28px 30px; display: grid; gap: 4px; }
+.estim .rot { font: 600 14px/1.2 var(--f-body); letter-spacing: 0.1em; text-transform: uppercase; color: var(--n-muted); margin: 0; }
+.estim .grande { font: 650 74px/1 var(--f-body); letter-spacing: -0.02em; margin: 6px 0 16px; }
+.estim .grande small { font-size: 28px; color: var(--n-ink-2); font-weight: 600; letter-spacing: 0; }
+.estim dl { margin: 0; display: grid; }
+.estim dl div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-top: 1px solid var(--n-line); font-size: 18px; }
+.estim dt { color: var(--n-ink-2); }
+.estim dd { margin: 0; font-weight: 650; font-variant-numeric: tabular-nums; }
+.estim .fonte { font-size: 13.5px; color: var(--n-muted); margin: 12px 0 0; line-height: 1.45; }
+.insight { grid-column: 1 / -1; margin: 0; padding: 20px 26px; font-size: 22px; line-height: 1.4; color: var(--n-ink-2); border-color: rgba(255, 173, 51, 0.35); }
+.insight b { color: var(--sodio); font-weight: 650; }
+
+/* sensor */
+.sensor { display: grid; grid-template-columns: 720px 1fr; gap: 40px; flex: 1; align-items: start; }
+.sensor-dir { display: grid; gap: 18px; }
+.graf-card { padding: 20px 22px 14px; }
+.graf-card h3 { font: 600 19px/1.2 var(--f-body); margin: 0; color: var(--n-ink); }
+.graf-card .legenda { color: var(--n-ink-2); font-size: 15px; margin: 10px 0 4px; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.stat { padding: 18px 20px; }
+.stat b { display: block; font: 650 40px/1 var(--f-body); letter-spacing: -0.015em; margin-bottom: 8px; }
+.stat b.verde { color: var(--n-novo); }
+.stat span { font-size: 15.5px; color: var(--n-ink-2); line-height: 1.35; display: block; }
+
+/* alternativas */
+.alts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.alt { padding: 24px 26px; display: grid; gap: 14px; align-content: start; position: relative; }
+.alt.rec { border-color: var(--n-novo); box-shadow: 0 0 0 1px var(--n-novo), 0 10px 40px rgba(31, 174, 123, 0.12); }
+.alt-topo { display: flex; align-items: center; gap: 14px; }
+.alt-ico { width: 54px; height: 54px; border-radius: 14px; background: var(--n-card-2); display: grid; place-items: center; flex: none; }
+.alt-ico svg { width: 34px; height: 34px; }
+.alt-nome { display: grid; gap: 3px; }
+.alt-nome .cod { font: 500 15px/1 var(--f-mono); color: var(--n-muted); }
+.alt-nome b { font: 600 30px/1.02 var(--f-display); letter-spacing: 0.01em; }
+.alt p { margin: 0; font-size: 16.5px; color: var(--n-ink-2); line-height: 1.4; min-height: 46px; }
+.alt dl { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 18px; }
+.alt dt { font-size: 14px; color: var(--n-muted); }
+.alt dd { margin: 2px 0 0; font: 650 26px/1.1 var(--f-body); letter-spacing: -0.01em; }
+.alt dd small { font-size: 15px; font-weight: 500; color: var(--n-ink-2); }
+.alt .chip-rec { position: absolute; top: 22px; right: 22px; font-size: 12px; }
+.custo10 { padding: 18px 26px 10px; }
+.custo10 .cab { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; }
+.custo10 h3 { font: 600 19px/1.2 var(--f-body); margin: 0; }
+.custo10 .cab span { font-size: 14.5px; color: var(--n-muted); }
+
+/* diagrama */
+.diag { display: grid; grid-template-rows: repeat(6, 1fr); gap: 10px; flex: 1; position: relative; padding-right: 44px; }
+.camada { display: grid; grid-template-columns: 214px 1fr; gap: 14px; align-items: stretch; position: relative; }
+.camada + .camada::before { content: ""; position: absolute; left: 107px; top: -10px; width: 2px; height: 10px; background: var(--n-axis); }
+.cam-rot { border-radius: 12px; padding: 12px 16px; display: flex; flex-direction: column; justify-content: center; background: var(--n-card-2); border: 1px solid var(--n-line); }
+.cam-rot i { font: 500 13px/1 var(--f-mono); font-style: normal; color: var(--n-muted); margin-bottom: 4px; }
+.cam-rot b { font: 600 22px/1.05 var(--f-display); letter-spacing: 0.02em; text-transform: uppercase; }
+.cam-caixas { display: flex; gap: 10px; min-width: 0; }
+.caixa { flex: 1 1 0; min-width: 0; background: var(--n-card); border: 1px solid var(--n-line); border-radius: 12px; padding: 11px 15px; display: grid; align-content: center; gap: 2px; }
+.caixa b { font-size: 17px; font-weight: 600; line-height: 1.25; }
+.caixa span { font-size: 14.5px; color: var(--n-ink-2); line-height: 1.3; }
+.caixa.solar { border-color: rgba(201, 133, 0, 0.55); }
+.caixa.larga { flex: 3 1 0; }
+.caixa.seta { flex: 0 0 auto; background: none; border: 0; padding: 0 2px; color: var(--n-muted); font-size: 22px; }
+.caixa code { font: 500 15px/1.4 var(--f-mono); color: var(--n-ink); }
+.ind-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.ind-chips span { font-size: 15px; color: var(--n-ink); background: var(--n-card-2); border: 1px solid var(--n-line); border-radius: 999px; padding: 6px 12px; }
+.retorno { position: absolute; right: -44px; top: 50%; height: calc(200% + 20px); width: 30px; border: 2px dashed var(--deixa); border-left: 0; border-radius: 0 14px 14px 0; opacity: 0.85; }
+.retorno span { position: absolute; left: calc(100% + 14px); top: 50%; transform: translate(-50%, -50%) rotate(90deg); white-space: nowrap; font: 600 14px/1 var(--f-body); color: var(--deixa); letter-spacing: 0.04em; }
+
+/* dashboard dentro do palco */
+.dcena-topo { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; }
+.palco .seletor { background: var(--n-card); border-color: var(--n-line); padding: 5px; border-radius: 14px; }
+.palco .seletor { flex-wrap: nowrap; }
+.palco .seletor button { font-size: 18px; padding: 12px 16px; color: var(--n-ink-2); border-radius: 10px; white-space: nowrap; }
+.palco .seletor button:hover { color: var(--n-ink); }
+.palco .seletor button[aria-checked="true"] { background: var(--n-card-2); color: var(--n-ink); box-shadow: inset 0 0 0 1px var(--n-borda); }
+.palco .seletor .cod { font-size: 15px; color: var(--n-muted); }
+.palco .alt-desc { color: var(--n-ink-2); font-size: 18px; margin: -12px 0 0; }
+.palco .tiles { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; margin: 0; }
+.palco .tile { background: var(--n-card); border-color: var(--n-line); padding: 16px 16px 14px; }
+.palco .tile .k { font-size: 14.5px; color: var(--n-ink-2); min-height: 38px; }
+.palco .tile .v { flex-direction: column; align-items: flex-start; gap: 2px; }
+.palco .tile .v b { font-size: 36px; color: var(--n-ink); }
+.palco .tile .v small { font-size: 15px; color: var(--n-ink-2); }
+.palco .tile .d { font-size: 13.5px; color: var(--n-muted); }
+.dgrafs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; min-height: 0; }
+
+/* benefícios */
+.bl { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1; align-items: start; }
+.bl-col { padding: 26px 30px 12px; }
+.bl-col h3 { font: 600 34px/1 var(--f-display); letter-spacing: 0.02em; text-transform: uppercase; margin: 0 0 10px; display: flex; align-items: center; gap: 12px; }
+.bl-col ul { list-style: none; margin: 0; padding: 0; }
+.bl-col li { display: grid; grid-template-columns: 30px 1fr; gap: 14px; padding: 15px 0; border-top: 1px solid var(--n-line); font-size: 20px; line-height: 1.38; color: var(--n-ink); }
+.bl-col li span { color: var(--n-ink-2); display: block; font-size: 16.5px; margin-top: 2px; }
+.bl-col li svg { width: 26px; height: 26px; margin-top: 2px; }
+.bl-col h3 svg { width: 34px; height: 34px; flex: none; }
+
+/* fim */
+.cena-fim.ativa { justify-content: center; }
+.fim h2 { font-size: 150px; line-height: 0.85; margin-bottom: 40px; }
+.fim-nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 40px; }
+.fim-nums div { padding: 22px 24px; }
+.fim-nums b { display: block; font: 650 54px/1 var(--f-body); letter-spacing: -0.02em; margin-bottom: 10px; }
+.fim-nums b.verde { color: var(--n-novo); }
+.fim-nums span { font-size: 17px; color: var(--n-ink-2); line-height: 1.35; display: block; }
+.fim-rodape { display: flex; justify-content: space-between; gap: 30px; font-size: 17px; color: var(--n-ink-2); border-top: 1px solid var(--n-line); padding-top: 22px; }
+
+/* controles da apresentação */
+.barra { position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: flex; gap: 4px; align-items: center; background: var(--n-barra); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--n-line); border-radius: 999px; padding: 5px; transition: opacity 0.25s; z-index: 60; max-width: calc(100vw - 24px); overflow-x: auto; }
+.barra button { border: 0; background: transparent; color: var(--n-ink); border-radius: 999px; padding: 9px 14px; cursor: pointer; font-size: 14px; font-weight: 600; display: inline-flex; gap: 7px; align-items: center; white-space: nowrap; }
+.barra button:hover { background: rgba(238, 242, 248, 0.09); }
+.barra .ctr { font: 500 14px/1 var(--f-mono); color: var(--n-ink-2); padding: 0 10px; white-space: nowrap; }
+.barra .sep { width: 1px; height: 22px; background: var(--n-line); margin: 0 4px; flex: none; }
+.progresso { position: fixed; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(238, 242, 248, 0.06); z-index: 60; transition: opacity 0.25s; }
+.progresso i { display: block; height: 100%; background: var(--led); width: 0; transition: width 0.4s ease; }
+.apres.ocioso .barra, .apres.ocioso .progresso { opacity: 0; pointer-events: none; }
+.apres.limpo .barra, .apres.limpo .progresso { display: none; }
+.aviso { position: fixed; top: calc(16px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); background: var(--n-card-2); color: var(--n-ink); border: 1px solid var(--n-borda); border-radius: 12px; padding: 12px 16px; font-size: 14.5px; z-index: 80; max-width: min(560px, calc(100vw - 32px)); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); }
+
+/* teleprompter na mesma janela (quando não dá para abrir outra) */
+.gaveta { position: fixed; top: 0; right: 0; bottom: 0; width: min(460px, 100vw); background: var(--n-card); border-left: 1px solid var(--n-line); z-index: 70; overflow-y: auto; color: var(--n-ink); padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.gaveta-aviso { margin: 0; padding: 12px 22px; font-size: 13px; color: var(--n-ink-2); background: var(--n-card-2); border-bottom: 1px solid var(--n-line); }
+.tp { padding: 20px 22px 24px; display: grid; gap: 16px; }
+.tp-topo { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; justify-content: space-between; }
+.tp-cena { font: 600 12.5px/1.2 var(--f-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--n-ink-2); }
+.tp-tit { font: 700 28px/1.05 var(--f-display); letter-spacing: 0.01em; display: block; margin-top: 4px; }
+.tp-tempo { font: 500 14px/1.5 var(--f-mono); color: var(--n-ink-2); text-align: right; }
+.tp-tempo b { color: var(--n-ink); font-weight: 500; }
+.tp-tempo .alerta { color: var(--sodio); }
+.tp-tempo .estouro { color: #ff7a7a; }
+.tp-fala { font-size: var(--tp-fs, 26px); line-height: 1.5; margin: 0; text-wrap: pretty; }
+.tp-acao { font-size: 14.5px; color: var(--n-ink-2); margin: 0; }
+.tp-prox { border-top: 1px solid var(--n-line); padding-top: 12px; font-size: 14.5px; color: var(--n-ink-2); margin: 0; }
+.tp-prox b { color: var(--n-ink); }
+.tp-botoes { display: flex; flex-wrap: wrap; gap: 8px; }
+.tp-botoes button { background: var(--n-card-2); border: 1px solid var(--n-line); color: var(--n-ink); border-radius: 10px; padding: 10px 14px; cursor: pointer; font-weight: 600; font-size: 14px; }
+.tp-botoes button.prim { background: var(--led); color: var(--n-stage); border-color: transparent; }
+.tp-ajuda { font-size: 12.5px; color: var(--n-muted); margin: 0; }
+
+.dica { position: fixed; pointer-events: none; background: var(--n-card-2); color: var(--n-ink); border: 1px solid var(--n-borda); font: 500 13px/1.45 var(--f-body); padding: 8px 11px; border-radius: 9px; white-space: nowrap; opacity: 0; transform: translate(-50%, calc(-100% - 12px)); transition: opacity 0.12s; z-index: 90; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }
+.dica b { font-weight: 650; }
+.dica .lin { display: flex; gap: 8px; align-items: center; }
+.dica i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+.erro-dados { margin: 24px; padding: 16px; border: 1px solid var(--ring); border-radius: 12px; background: var(--surface); }
+
+.praca .luz { opacity: var(--op, 0.9); }
+.praca.acende .luz { animation: acendeLuz 0.9s ease both; animation-delay: calc(var(--i) * 85ms + 250ms); }
+@keyframes acendeLuz { from { opacity: 0; } to { opacity: var(--op, 0.9); } }
+@media (prefers-reduced-motion: reduce) {
+  .cena.ativa .ent, .praca.acende .luz { animation: none; }
+  .progresso i { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ================= PAINEL (dashboard) ================= -->
+<div class="vista" id="vPainel">
+  <header class="faixa">
+    <div class="faixa-in">
+      <div>
+        <p class="olho">Neighborhood Action Dashboard · Soluções em Energias Renováveis · Grupo 5</p>
+        <h1>Praça Comunitária <em>energia da iluminação</em></h1>
+        <p class="faixa-sub" id="faixaSub"></p>
+        <div class="acoes">
+          <a class="btn btn-luz" href="#apresentacao"><svg class="icone" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>Apresentar para o vídeo</a>
+          <a class="btn btn-fantasma" href="#roteiro">Roteiro e falas</a>
+          <button class="btn btn-fantasma" id="btnTema" type="button">Alternar tema</button>
+        </div>
+      </div>
+      <div class="faixa-ilus" id="faixaIlus"></div>
+    </div>
+  </header>
+
+  <main class="miolo">
+    <section class="bloco" aria-labelledby="tIndicadores">
+      <div class="bloco-topo">
+        <div>
+          <h2 id="tIndicadores">Indicadores por alternativa</h2>
+          <p class="sub">Mesma necessidade de luz nos 12 postes · mês de 30 dias · comparação com a situação atual</p>
+        </div>
+        <div class="seletor" role="radiogroup" aria-label="Alternativa" id="selPainel"></div>
+      </div>
+      <p class="alt-desc" id="descPainel"></p>
+      <div class="tiles" id="tilesPainel" aria-live="polite"></div>
+    </section>
+
+    <div class="grade">
+      <section class="bloco">
+        <h3>De onde vem a energia (kWh/mês)</h3>
+        <p class="sub">Energia usada pela iluminação em cada cenário; a parte solar é o balanço do ano</p>
+        <div class="legenda"><span><i style="background:var(--rede)"></i>Rede elétrica</span><span><i style="background:var(--solar)"></i>Solar fotovoltaica</span></div>
+        <div class="graf" id="gFonte"></div>
+      </section>
+      <section class="bloco">
+        <h3>Custo total em 10 anos (R$)</h3>
+        <p class="sub">Investimento + energia + manutenção + reposições, sem correção monetária</p>
+        <div class="legenda"><span><i style="background:var(--hoje)"></i>Situação atual e alternativas</span><span><i style="background:var(--novo)"></i>Recomendada</span></div>
+        <div class="graf" id="gCusto"></div>
+      </section>
+      <section class="bloco">
+        <h3>Potência dos 12 postes ao longo de uma noite (W)</h3>
+        <p class="sub">O vapor de sódio fica no máximo; o LED cai para o nível médio com presença e dimerização depois das 23h</p>
+        <div class="legenda"><span><i style="background:var(--hoje)"></i>Hoje (vapor de sódio)</span><span><i style="background:var(--novo)"></i>LED + sensor (A1, A2 e A3)</span></div>
+        <div class="graf" id="gNoite"></div>
+      </section>
+      <section class="bloco">
+        <h3>Monitoramento: consumo por noite (kWh)</h3>
+        <p class="sub">30 noites de novembro de 2026, <b>dados simulados</b> com presença variável (mais movimento nos fins de semana)</p>
+        <div class="legenda"><span><i style="background:var(--hoje)"></i>Hoje (vapor de sódio)</span><span><i style="background:var(--novo)"></i>LED + sensor</span></div>
+        <div class="graf" id="gMon"></div>
+      </section>
+      <section class="bloco">
+        <h3>Carga da bateria de um poste solar (A2, %)</h3>
+        <p class="sub">Simulado, fim de cada dia, com sol variável; o sistema foi dimensionado para junho, o pior mês</p>
+        <div class="legenda"><span><i style="background:var(--solar)"></i>Carga no fim do dia</span><span><i class="linha" style="background:var(--ink-2)"></i>Limite de descarga (10%)</span></div>
+        <div class="graf" id="gSoc"></div>
+      </section>
+      <section class="bloco">
+        <h3>Geração dos painéis do quiosque (A3, kWh por dia)</h3>
+        <p class="sub">Simulado, 1,6 kWp; a energia é injetada de dia e compensada à noite</p>
+        <div class="legenda"><span><i style="background:var(--solar)"></i>Geração diária</span><span><i class="linha" style="background:var(--ink-2)"></i>Consumo médio da iluminação por noite</span></div>
+        <div class="graf" id="gFv"></div>
+      </section>
+    </div>
+
+    <section class="bloco" aria-labelledby="tTabela">
+      <h2 id="tTabela">Comparação completa</h2>
+      <p class="sub">12 postes, mesmo perfil de luz · mês de 30 dias · tarifa B4a da Enel SP sem tributos, bandeira verde</p>
+      <div class="tabela-wrap"><table id="tabela"></table></div>
+    </section>
+
+    <p class="nota" id="notaPainel"></p>
+  </main>
+</div>
+
+<!-- ================= ROTEIRO ================= -->
+<div class="vista" id="vRoteiro" hidden>
+  <header class="faixa faixa-curta">
+    <div class="faixa-in">
+      <div>
+        <p class="olho"><a href="#painel" style="text-decoration:none">← Voltar ao painel</a></p>
+        <h1>Roteiro do vídeo</h1>
+        <p class="faixa-sub" id="rotSub"></p>
+        <div class="acoes">
+          <a class="btn btn-luz" href="#apresentacao"><svg class="icone" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>Ensaiar com a apresentação</a>
+          <button class="btn btn-fantasma" id="btnCopiar" type="button">Copiar todas as falas</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main class="miolo">
+    <section class="bloco">
+      <h2>Como gravar sem erro</h2>
+      <ol class="passos">
+        <li>Abra o arquivo <b>index.html</b> no Chrome e clique em <b>Apresentar para o vídeo</b>. Aperte <kbd>F</kbd> para a tela cheia.</li>
+        <li>Aperte <kbd>R</kbd>: o roteiro abre numa janela separada. Ponha essa janela ao lado ou no segundo monitor.</li>
+        <li>No roteiro, clique em <b>Iniciar cronômetro</b> e ensaie uma vez. As setas <kbd>→</kbd> <kbd>←</kbd> passam as cenas nas duas janelas.</li>
+        <li>Grave só a janela da apresentação (no OBS: <b>Captura de janela</b>). Na cena 7, aperte <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> quando aparecerem as marcações.</li>
+      </ol>
+    </section>
+    <ol class="falas" id="listaFalas"></ol>
+    <p class="nota">As falas são geradas por <code>video/gerar_roteiro.py</code> com os mesmos números do cálculo. Texto em destaque, como <span class="deixa">clique em A1</span>, é ação na tela e não é para ler. Tempo estimado para uma fala calma; o limite do vídeo é 3:00.</p>
+  </main>
+</div>
+
+<!-- ================= APRESENTAÇÃO ================= -->
+<div class="apres" id="vApres" hidden>
+  <div class="palco" id="palco" aria-live="polite"></div>
+  <div class="barra" id="barra">
+    <button type="button" id="bAnt" aria-label="Cena anterior"><svg class="icone" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 3 5.5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <span class="ctr" id="ctr">1 / 9</span>
+    <button type="button" id="bProx" aria-label="Próxima cena"><svg class="icone" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <span class="sep"></span>
+    <button type="button" id="bRoteiro">Roteiro <kbd style="border-color:var(--n-line);background:transparent;color:var(--n-ink-2)">R</kbd></button>
+    <button type="button" id="bTela">Tela cheia <kbd style="border-color:var(--n-line);background:transparent;color:var(--n-ink-2)">F</kbd></button>
+    <button type="button" id="bLimpo">Esconder barra <kbd style="border-color:var(--n-line);background:transparent;color:var(--n-ink-2)">H</kbd></button>
+    <span class="sep"></span>
+    <button type="button" id="bSair">Sair</button>
+  </div>
+  <div class="progresso"><i id="prog"></i></div>
+  <aside class="gaveta" id="gaveta" hidden aria-label="Roteiro">
+    <p class="gaveta-aviso">Este painel aparece na gravação. Para gravar sem ele, abra o arquivo <b>index.html</b> direto no Chrome: lá a tecla R abre o roteiro numa janela separada. Ou leia as falas pelo celular.</p>
+    <div class="tp" id="tpGaveta"></div>
+  </aside>
+</div>
+
+<div class="aviso" id="aviso" hidden role="status"></div>
+<div class="dica" id="dica"></div>
+
+<script src="dados.js"></script>
+<script src="roteiro.js"></script>
+<script>
+(function () {
+  "use strict";
+  var D = window.SERS_DADOS;
+  if (!D) {
+    document.body.insertAdjacentHTML("afterbegin", '<p class="erro-dados">Não encontrei o arquivo <b>dados.js</b> ao lado deste index.html. Rode <code>python calculos/calculo_energia.py</code> na pasta sers/.</p>');
+    return;
+  }
+  var R = window.SERS_ROTEIRO || { cenas: [], total_s: 0, limite_s: 180 };
+  var P = D.parametros;
+  var C = {};
+  D.cenarios.forEach(function (c) { C[c.codigo] = c; });
+
+  /* ---------- utilidades ---------- */
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  function nf(x, d) { d = d || 0; return Number(x).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function rs(x, d) { return "R$ " + nf(x, d || 0); }
+  function mil(x) { return "R$ " + nf(x / 1000, 1) + " mil"; }
+  function mmss(s) { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+  function horasMin(h) { var H = Math.floor(h), M = Math.round((h - H) * 60); return H + " h " + String(M).padStart(2, "0") + " min"; }
+  function guardar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function ler(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  var REDUZ = matchMedia("(prefers-reduced-motion: reduce)");
+  var avisoT;
+  function avisar(txt, ms) {
+    var a = $("#aviso"); a.textContent = txt; a.hidden = false;
+    clearTimeout(avisoT); avisoT = setTimeout(function () { a.hidden = true; }, ms || 4200);
+  }
+  function deixas(txt) { return txt.replace(/\[([^\]]+)\]/g, '<span class="deixa">$1</span>'); }
+
+  var ALTS = {
+    A1: { cod: "A1", nome: "LED + sensores", fonte: "Rede elétrica" },
+    A2: { cod: "A2", nome: "Solar autônoma", fonte: "Painel e bateria em cada poste" },
+    A3: { cod: "A3", nome: "LED + solar na rede", fonte: "Rede + painéis no quiosque" }
+  };
+  var economia10 = C.A0.custo_total_10_anos - C.A3.custo_total_10_anos;
+
+  /* ---------- desenho da praça (vista de cima) ---------- */
+  var POSTES = [[52, 52], [188, 44], [452, 44], [588, 52], [44, 220], [596, 220], [52, 388], [188, 396], [452, 396], [588, 388], [320, 132], [320, 308]];
+  var ARVORES = [[110, 112, 24], [172, 160, 17], [236, 96, 20], [96, 172, 15], [418, 296, 23], [500, 344, 18], [562, 288, 16], [456, 366, 14], [246, 330, 13]];
+  function praca(o) {
+    var id = o.id, sodio = o.modo === "sodio";
+    var c1 = sodio ? "#ffb64d" : "#eef4ff";
+    var nivel0 = o.modo === "sensor" ? 0.3 : 1;
+    var s = '<svg class="praca' + (o.acende ? " acende" : "") + '" viewBox="-56 -56 752 552" role="img" aria-label="' + (o.rotulo || "Planta da praça com 12 postes") + '">';
+    s += '<defs><radialGradient id="' + id + '-g"><stop offset="0" stop-color="' + c1 + '" stop-opacity="0.95"/><stop offset="0.32" stop-color="' + c1 + '" stop-opacity="0.42"/><stop offset="1" stop-color="' + c1 + '" stop-opacity="0"/></radialGradient></defs>';
+    s += '<rect x="10" y="10" width="620" height="420" rx="30" style="fill:var(--calcada)"/>';
+    s += '<rect x="30" y="30" width="580" height="380" rx="20" style="fill:var(--grama)"/>';
+    s += '<g fill="none" stroke-linecap="round" style="stroke:var(--piso)"><rect x="44" y="44" width="552" height="352" rx="14" stroke-width="20"/><path d="M44 220H596M320 44V396" stroke-width="16"/></g>';
+    s += '<circle cx="320" cy="220" r="60" style="fill:var(--piso)"/><circle cx="320" cy="220" r="24" stroke-width="3" style="fill:var(--grama);stroke:var(--piso-2)"/>';
+    s += '<g stroke-width="2" fill="none" style="stroke:var(--quadra-linha)"><rect x="372" y="78" width="180" height="100" rx="4" style="fill:var(--quadra)"/><path d="M462 78V178"/><circle cx="462" cy="128" r="15"/><path d="M372 108h22v40h-22M552 108h-22v40h22"/></g>';
+    ARVORES.forEach(function (a) { s += '<circle cx="' + a[0] + '" cy="' + a[1] + '" r="' + a[2] + '" style="fill:var(--arvore)"/><circle cx="' + (a[0] - a[2] * 0.25) + '" cy="' + (a[1] - a[2] * 0.25) + '" r="' + (a[2] * 0.55) + '" style="fill:var(--arvore-2)"/>'; });
+    s += '<g style="fill:var(--banco)"><rect x="254" y="150" width="26" height="8" rx="2"/><rect x="360" y="282" width="26" height="8" rx="2"/><rect x="360" y="150" width="26" height="8" rx="2"/><rect x="254" y="282" width="26" height="8" rx="2"/></g>';
+    s += '<rect x="92" y="258" width="104" height="80" rx="6" stroke-width="2" style="fill:var(--quiosque);stroke:var(--quiosque-linha)"/>';
+    if (o.solar) {
+      for (var r = 0; r < 2; r++) for (var c = 0; c < 4; c++) s += '<rect x="' + (100 + c * 23) + '" y="' + (266 + r * 33) + '" width="20" height="29" rx="2" stroke-width="1.2" style="fill:var(--painel);stroke:var(--painel-linha)"/>';
+    } else {
+      s += '<text x="144" y="303" text-anchor="middle" font-size="13" style="fill:var(--quiosque-linha);font-family:var(--f-body);font-weight:600;letter-spacing:.08em">QUIOSQUE</text>';
+    }
+    s += '<g style="mix-blend-mode:screen">';
+    POSTES.forEach(function (p, i) {
+      var off = i === o.queimada;
+      var nv = off ? 0 : nivel0;
+      s += '<circle class="luz" cx="' + p[0] + '" cy="' + p[1] + '" r="' + (46 + 40 * nv) + '" fill="url(#' + id + '-g)" style="--i:' + i + ';--op:' + (off ? 0 : (0.25 + 0.7 * nv).toFixed(2)) + '"/>';
+    });
+    s += "</g>";
+    POSTES.forEach(function (p, i) {
+      var off = i === o.queimada;
+      s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="5.5" stroke-width="2.5" style="fill:' + (off ? "var(--piso-2)" : "var(--poste)") + ';stroke:var(--n-stage)"/>';
+      if (off) s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="13" fill="none" stroke-width="2" stroke-dasharray="4 4" style="stroke:var(--sodio)"/>';
+    });
+    if (o.modo === "sensor") {
+      s += '<path class="rota" d="M8 220H260A60 60 0 0 1 320 160V8" fill="none" stroke="none"/>';
+      s += '<g class="pessoa" transform="translate(150 220)"><circle r="15" style="fill:var(--led)" opacity="0.2"/><circle r="7" style="fill:var(--led)"/></g>';
+    }
+    return s + "</svg>";
+  }
+
+  var animId = null;
+  function animarSensor(svg) {
+    pararAnim();
+    var rota = $(".rota", svg), pessoa = $(".pessoa", svg), luzes = $$(".luz", svg);
+    if (!rota || !pessoa) return;
+    var len = rota.getTotalLength(), niveis = luzes.map(function () { return 0.3; }), T = 11000, t0 = performance.now();
+    function nivelAlvo(i, pt) { var d = Math.hypot(POSTES[i][0] - pt.x, POSTES[i][1] - pt.y); return d < 85 ? 1 : d < 170 ? 1 - ((d - 85) / 85) * 0.7 : 0.3; }
+    function aplica(pt, suave) {
+      pessoa.setAttribute("transform", "translate(" + pt.x.toFixed(1) + " " + pt.y.toFixed(1) + ")");
+      luzes.forEach(function (l, i) {
+        var alvo = nivelAlvo(i, pt);
+        niveis[i] = suave ? niveis[i] + (alvo - niveis[i]) * 0.08 : alvo;
+        l.style.setProperty("--op", (0.25 + 0.7 * niveis[i]).toFixed(3));
+        l.setAttribute("r", (46 + 40 * niveis[i]).toFixed(1));
+      });
+    }
+    if (REDUZ.matches) { aplica(rota.getPointAtLength(len * 0.3), false); return; }
+    function quadro(agora) {
+      var f = ((agora - t0) % T) / T;
+      aplica(rota.getPointAtLength(f * len), true);
+      animId = requestAnimationFrame(quadro);
+    }
+    animId = requestAnimationFrame(quadro);
+  }
+  function pararAnim() { if (animId) cancelAnimationFrame(animId); animId = null; }
+
+  /* ---------- gráficos (SVG desenhado à mão, sem bibliotecas) ---------- */
+  function cores(el) {
+    var cs = getComputedStyle(el), g = function (n) { return cs.getPropertyValue("--c-" + n).trim(); };
+    return { hoje: g("hoje"), novo: g("novo"), rede: g("rede"), solar: g("solar"), ink: g("ink"), ink2: g("ink2"), muted: g("muted"), grid: g("grid"), axis: g("axis"), surface: g("surface") };
+  }
+  var dica = $("#dica");
+  function mostraDica(html, cx, cy) { dica.innerHTML = html; dica.style.left = cx + "px"; dica.style.top = cy + "px"; dica.style.opacity = 1; }
+  function escondeDica() { dica.style.opacity = 0; }
+  function linhaDica(cor, txt) { return '<div class="lin"><i style="background:' + cor + '"></i>' + txt + "</div>"; }
+
+  function grafLinhas(el, o) {
+    var k = cores(el), W = o.W || 640, H = o.H || 260, fs = o.fs || 12;
+    var todos = []; o.series.forEach(function (s) { todos = todos.concat(s.v); });
+    var ymin = o.ymin || 0, ymax = o.ymax || Math.max.apply(null, todos) * 1.12;
+    var pl = fs * 3.7, pr = 16, pt = 12, pb = fs * 2.4, n = o.rotulos.length;
+    function x(i) { return pl + (i / (n - 1)) * (W - pl - pr); }
+    function y(v) { return pt + (1 - (v - ymin) / (ymax - ymin)) * (H - pt - pb); }
+    var g = "", ticks = o.ticks || 4;
+    for (var i = 0; i <= ticks; i++) {
+      var v = ymin + ((ymax - ymin) * i) / ticks, yy = y(v);
+      g += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + yy + '" y2="' + yy + '" stroke="' + (i ? k.grid : k.axis) + '" stroke-width="1"/>';
+      g += '<text x="' + (pl - 8) + '" y="' + (yy + fs * 0.35) + '" font-size="' + fs + '" fill="' + k.muted + '" text-anchor="end">' + o.fmtEixo(v) + "</text>";
+    }
+    var passo = o.passoX || Math.ceil(n / 6);
+    o.rotulos.forEach(function (r, j) { if (j % passo === 0) g += '<text x="' + x(j) + '" y="' + (H - fs * 0.55) + '" font-size="' + fs + '" fill="' + k.muted + '" text-anchor="middle">' + r + "</text>"; });
+    (o.refs || []).forEach(function (r) {
+      var yy = y(r.v);
+      g += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + yy + '" y2="' + yy + '" stroke="' + k.ink2 + '" stroke-width="1.25" stroke-opacity="0.75"/>';
+      if (r.t) g += '<text x="' + (pl + 8) + '" y="' + (yy - 7) + '" font-size="' + fs * 0.95 + '" fill="' + k.ink2 + '">' + r.t + "</text>";
+    });
+    o.series.forEach(function (s) {
+      var cor = k[s.cor], pts = s.v.map(function (v, j) { return x(j).toFixed(1) + "," + y(v).toFixed(1); });
+      if (s.area) g += '<path d="M' + pts.join(" L") + " L" + x(n - 1).toFixed(1) + "," + y(ymin).toFixed(1) + " L" + x(0).toFixed(1) + "," + y(ymin).toFixed(1) + ' Z" fill="' + cor + '" fill-opacity="0.10"/>';
+      g += '<polyline points="' + pts.join(" ") + '" fill="none" stroke="' + cor + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+      if (s.fim) g += '<circle cx="' + x(n - 1) + '" cy="' + y(s.v[n - 1]) + '" r="4.5" fill="' + cor + '" stroke="' + k.surface + '" stroke-width="2"/>';
+    });
+    g += '<line class="cruz" x1="0" x2="0" y1="' + pt + '" y2="' + (H - pb) + '" stroke="' + k.axis + '" stroke-width="1" opacity="0"/>';
+    o.series.forEach(function (s, j) { g += '<circle class="pt' + j + '" r="5" fill="' + k[s.cor] + '" stroke="' + k.surface + '" stroke-width="2" opacity="0"/>'; });
+    g += '<rect class="alvo" x="' + pl + '" y="0" width="' + (W - pl - pr) + '" height="' + H + '" fill="transparent"/>';
+    el.innerHTML = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + (o.rotulo || "Gráfico de linhas") + '">' + g + "</svg>";
+    var svg = $("svg", el), alvo = $(".alvo", el), cruz = $(".cruz", el);
+    function sai() { escondeDica(); cruz.setAttribute("opacity", 0); o.series.forEach(function (s, j) { $(".pt" + j, el).setAttribute("opacity", 0); }); }
+    alvo.addEventListener("mousemove", function (ev) {
+      var b = svg.getBoundingClientRect(), esc = b.width / W;
+      var j = Math.max(0, Math.min(n - 1, Math.round((((ev.clientX - b.left) / esc - pl) / (W - pl - pr)) * (n - 1))));
+      cruz.setAttribute("x1", x(j)); cruz.setAttribute("x2", x(j)); cruz.setAttribute("opacity", 1);
+      var topo = H;
+      o.series.forEach(function (s, q) { var c = $(".pt" + q, el); c.setAttribute("cx", x(j)); c.setAttribute("cy", y(s.v[j])); c.setAttribute("opacity", 1); topo = Math.min(topo, y(s.v[j])); });
+      mostraDica("<b>" + (o.titulo ? o.titulo(j) : o.rotulos[j]) + "</b>" + o.series.map(function (s) { return linhaDica(k[s.cor], s.nome + ": " + o.fmtValor(s.v[j])); }).join(""), b.left + x(j) * esc, b.top + topo * esc);
+    });
+    alvo.addEventListener("mouseleave", sai);
+  }
+
+  function passoRedondo(bruto) {
+    var e = Math.pow(10, Math.floor(Math.log10(bruto))), m = bruto / e;
+    var opc = [1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
+    for (var i = 0; i < opc.length; i++) if (opc[i] >= m - 1e-9) return opc[i] * e;
+    return 10 * e;
+  }
+  function grafBarras(el, o) {
+    var k = cores(el), W = o.W || 640, fs = o.fs || 12, rowH = o.rowH || fs * 3.3;
+    var barra = Math.min(24, rowH * 0.52), pl = o.pl || fs * 9.5, pr = fs * 6.4, pt = 4;
+    var H = pt + o.linhas.length * rowH + fs * 2.2;
+    var bruto = Math.max.apply(null, o.linhas.map(function (l) { return l.partes.reduce(function (s, p) { return s + p.v; }, 0); }));
+    var passo = passoRedondo(bruto / 4), nTicks = Math.ceil(bruto / passo), max = passo * nTicks;
+    function x(v) { return pl + (v / max) * (W - pl - pr); }
+    var g = "";
+    for (var i = 0; i <= nTicks; i++) {
+      var v = passo * i, xx = x(v);
+      g += '<line x1="' + xx + '" x2="' + xx + '" y1="' + pt + '" y2="' + (H - fs * 1.9) + '" stroke="' + (i ? k.grid : k.axis) + '" stroke-width="1"/>';
+      g += '<text x="' + xx + '" y="' + (H - fs * 0.4) + '" font-size="' + fs + '" fill="' + k.muted + '" text-anchor="middle">' + o.fmtEixo(v) + "</text>";
+    }
+    o.linhas.forEach(function (l, i) {
+      var y0 = pt + i * rowH + (rowH - barra) / 2, acc = 0;
+      var partes = l.partes.filter(function (p) { return p.v > 0; });
+      partes.forEach(function (p, j) {
+        var ult = j === partes.length - 1;
+        var x0 = x(acc) + (j ? 1 : 0), x1 = x(acc + p.v) - (ult ? 0 : 1), w = Math.max(x1 - x0, 1.5), r = ult ? Math.min(4, w / 2) : 0, cor = k[p.cor];
+        g += ult ? '<path d="M' + x0 + "," + y0 + " H" + (x0 + w - r) + " Q" + (x0 + w) + "," + y0 + " " + (x0 + w) + "," + (y0 + r) + " V" + (y0 + barra - r) + " Q" + (x0 + w) + "," + (y0 + barra) + " " + (x0 + w - r) + "," + (y0 + barra) + " H" + x0 + ' Z" fill="' + cor + '"/>'
+                 : '<rect x="' + x0 + '" y="' + y0 + '" width="' + w + '" height="' + barra + '" fill="' + cor + '"/>';
+        acc += p.v;
+      });
+      var total = l.partes.reduce(function (s, p) { return s + p.v; }, 0);
+      g += '<text x="' + (pl - 12) + '" y="' + (y0 + barra / 2 + fs * 0.36) + '" font-size="' + fs * 1.04 + '" fill="' + k.ink + '" text-anchor="end" font-weight="' + (l.destaque ? 650 : 500) + '">' + l.nome + "</text>";
+      g += '<text x="' + (x(total) + 9) + '" y="' + (y0 + barra / 2 + fs * 0.36) + '" font-size="' + fs + '" fill="' + k.ink2 + '" font-weight="' + (l.destaque ? 650 : 500) + '">' + o.fmt(total) + "</text>";
+      g += '<rect class="alvo" data-i="' + i + '" x="0" y="' + (pt + i * rowH) + '" width="' + W + '" height="' + rowH + '" fill="transparent"/>';
+    });
+    el.innerHTML = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + (o.rotulo || "Gráfico de barras") + '">' + g + "</svg>";
+    $$(".alvo", el).forEach(function (a) {
+      var l = o.linhas[+a.dataset.i];
+      a.addEventListener("mousemove", function (ev) { mostraDica("<b>" + l.nome + "</b>" + (l.dica || l.partes.map(function (p) { return linhaDica(k[p.cor], p.nome + ": " + o.fmt(p.v)); }).join("")), ev.clientX, ev.clientY); });
+      a.addEventListener("mouseleave", escondeDica);
+    });
+  }
+
+  /* ---------- peças compartilhadas pelo painel e pela cena 7 ---------- */
+  function tilesHTML(cod) {
+    var c = C[cod], a0 = C.A0;
+    var renov = { A1: "Toda a energia vem da rede", A2: "Painel e bateria em cada poste", A3: "Painéis do quiosque, no balanço do ano" }[cod];
+    var t = [
+      ["Consumo da rede", nf(c.consumo_rede_kwh_mes, 1), "kWh/mês", "Hoje: " + nf(a0.consumo_rede_kwh_mes, 1) + " kWh/mês"],
+      ["Economia de energia", nf(c.economia_kwh_mes, 1), "kWh/mês", '<span class="delta">−' + nf(c.economia_rede_pct, 1) + "%</span> de energia da rede"],
+      ["Redução de custo", nf(c.economia_rs_mes, 2), "R$/mês", "Energia e manutenção · " + rs(c.economia_rs_ano) + "/ano"],
+      ["Energia renovável", nf(c.participacao_renovavel_pct, 1), "%", renov],
+      ["CO₂ evitado", nf(c.emissoes_evitadas_kgco2_ano, 0), "kg/ano", "Fator do SIN 2024: " + nf(P.fator_emissao, 4) + " kg/kWh"],
+      ["Tempo em modo econômico", nf(c.horas_dimerizado_dia, 1), "h/dia", "Luz a " + nf(P.dim_pct, 0) + "% sem ninguém por perto"],
+      ["Retorno do investimento", nf(c.payback_anos, 1), "anos", "Investimento: " + rs(c.capex)]
+    ];
+    return t.map(function (x) { return '<div class="tile"><p class="k">' + x[0] + '</p><p class="v"><b>' + x[1] + "</b><small>" + x[2] + '</small></p><p class="d">' + x[3] + "</p></div>"; }).join("");
+  }
+  function seletorHTML(atual) {
+    return ["A1", "A2", "A3"].map(function (k) {
+      return '<button type="button" role="radio" data-alt="' + k + '" aria-checked="' + (k === atual) + '"><span class="cod">' + k + "</span>" + ALTS[k].nome + (k === "A3" ? ' <span class="chip-rec">Recomendada</span>' : "") + "</button>";
+    }).join("");
+  }
+  function descAlt(k) { return C[k].descricao + "."; }
+
+  function grafNoite(el, o) {
+    var pn = D.perfil_noite;
+    grafLinhas(el, Object.assign({ rotulos: pn.map(function (p) { return p.hora; }), series: [
+      { nome: "Hoje (vapor de sódio)", cor: "hoje", v: pn.map(function (p) { return p.atual_w; }) },
+      { nome: "LED + sensor", cor: "novo", v: pn.map(function (p) { return p.led_w; }), area: true }],
+      fmtEixo: function (v) { return nf(v, 0); }, fmtValor: function (v) { return nf(v, 0) + " W"; }, ymax: 1500, ticks: 3, passoX: 8, rotulo: "Potência dos 12 postes ao longo da noite" }, o));
+  }
+  var MON = D.monitoramento_simulado;
+  var DIAS = MON.map(function (m) { return m.data.slice(8, 10) + "/" + m.data.slice(5, 7); });
+  function tituloDia(i) { return new Date(MON[i].data + "T12:00").toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "2-digit" }); }
+  function grafMon(el, o) {
+    grafLinhas(el, Object.assign({ rotulos: DIAS, series: [
+      { nome: "Hoje", cor: "hoje", v: MON.map(function (m) { return m.consumo_atual_kwh; }) },
+      { nome: "LED + sensor", cor: "novo", v: MON.map(function (m) { return m.consumo_led_sensor_kwh; }), area: true, fim: true }],
+      fmtEixo: function (v) { return nf(v, 0); }, fmtValor: function (v) { return nf(v, 2) + " kWh"; }, ymax: 20, titulo: tituloDia, rotulo: "Consumo por noite, dados simulados" }, o));
+  }
+  function grafSoc(el, o) {
+    grafLinhas(el, Object.assign({ rotulos: DIAS, series: [{ nome: "Carga da bateria", cor: "solar", v: MON.map(function (m) { return m.soc_bateria_poste_pct; }), area: true, fim: true }],
+      fmtEixo: function (v) { return nf(v, 0) + "%"; }, fmtValor: function (v) { return nf(v, 0) + "%"; }, ymin: 0, ymax: 100, refs: [{ v: 10 }], titulo: tituloDia, rotulo: "Carga da bateria de um poste solar" }, o));
+  }
+  function grafFv(el, o) {
+    grafLinhas(el, Object.assign({ rotulos: DIAS, series: [{ nome: "Geração", cor: "solar", v: MON.map(function (m) { return m.geracao_fv_quiosque_kwh; }), area: true, fim: true }],
+      fmtEixo: function (v) { return nf(v, 0); }, fmtValor: function (v) { return nf(v, 2) + " kWh"; }, ymin: 0, ymax: 12,
+      refs: [{ v: C.A3.energia_demandada_kwh_ano / 365 }], titulo: tituloDia, rotulo: "Geração dos painéis do quiosque" }, o));
+  }
+  function custoDica(c) {
+    var A = P.horizonte_anos;
+    return '<div class="lin">Investimento: ' + rs(c.capex) + '</div><div class="lin">Energia em ' + A + " anos: " + rs(c.custo_energia_ano * A) + '</div><div class="lin">Manutenção e reposições: ' + rs(c.om_ano * A + c.reposicoes_horizonte) + "</div>";
+  }
+  var NOME_CEN = { A0: "Hoje", A1: "A1 · LED + sensores", A2: "A2 · Solar autônoma", A3: "A3 · LED + solar na rede" };
+  function grafCusto(el, o) {
+    grafBarras(el, Object.assign({ linhas: ["A0", "A1", "A2", "A3"].map(function (k) {
+      var c = C[k];
+      return { nome: NOME_CEN[k], destaque: k === "A3", partes: [{ nome: "Total", v: c.custo_total_10_anos, cor: k === "A3" ? "novo" : "hoje" }], dica: custoDica(c) };
+    }), fmt: function (v) { return rs(v); }, fmtEixo: function (v) { return v ? nf(v / 1000, 0) + " mil" : "0"; }, rotulo: "Custo total em 10 anos por cenário" }, o));
+  }
+  function grafFonte(el, o) {
+    grafBarras(el, Object.assign({ linhas: ["A0", "A1", "A2", "A3"].map(function (k) {
+      var c = C[k], sol = c.renovavel_kwh_mes;
+      return { nome: NOME_CEN[k], destaque: k === "A3", partes: [{ nome: "Rede", v: c.energia_demandada_kwh_mes - sol, cor: "rede" }, { nome: "Solar", v: sol, cor: "solar" }] };
+    }), fmt: function (v) { return nf(v, 1) + " kWh"; }, fmtEixo: function (v) { return nf(v, 0); }, rotulo: "Energia por fonte em cada cenário" }, o));
+  }
+
+  /* ---------- painel ---------- */
+  var altPainel = "A3";
+  function desenharPainel() {
+    $("#selPainel").innerHTML = seletorHTML(altPainel);
+    $("#descPainel").textContent = descAlt(altPainel);
+    $("#tilesPainel").innerHTML = tilesHTML(altPainel);
+  }
+  function graficosPainel() {
+    var largura = $("#gFonte").clientWidth || 640;
+    var o = { fs: Math.round(12 * Math.min(1.6, Math.max(1, 640 / largura))) };
+    grafFonte($("#gFonte"), o);
+    grafCusto($("#gCusto"), o);
+    grafNoite($("#gNoite"), o);
+    grafMon($("#gMon"), o);
+    grafSoc($("#gSoc"), o);
+    grafFv($("#gFv"), o);
+  }
+  function tabela() {
+    var cols = ["A0", "A1", "A2", "A3"];
+    var lin = [
+      ["Fonte de energia", function (c) { return c.fonte_energia; }],
+      ["Energia usada pela iluminação (kWh/mês)", function (c) { return nf(c.energia_demandada_kwh_mes, 1); }],
+      ["Consumo da rede (kWh/mês)", function (c) { return nf(c.consumo_rede_kwh_mes, 1); }],
+      ["Economia de energia da rede", function (c) { return c.codigo === "A0" ? "—" : nf(c.economia_rede_pct, 1) + "%"; }],
+      ["Custo de energia (R$/mês)", function (c) { return rs(c.custo_energia_mes, 2); }],
+      ["Com bandeira vermelha 1 (R$/mês)", function (c) { return rs((c.custo_energia_ano_bandeira_vermelha * P.dias_mes) / 365, 2); }],
+      ["Manutenção (R$/ano)", function (c) { return rs(c.om_ano); }],
+      ["Energia renovável", function (c) { return nf(c.participacao_renovavel_pct, 1) + "%"; }],
+      ["Emissões (kg CO₂/ano)", function (c) { return nf(c.emissoes_kgco2_ano, 1); }],
+      ["CO₂ evitado (kg/ano)", function (c) { return c.codigo === "A0" ? "—" : nf(c.emissoes_evitadas_kgco2_ano, 1); }],
+      ["Tempo em modo econômico (h/dia)", function (c) { return nf(c.horas_dimerizado_dia, 1); }],
+      ["Investimento inicial", function (c) { return rs(c.capex); }],
+      ["Redução de custo (R$/ano)", function (c) { return c.codigo === "A0" ? "—" : rs(c.economia_rs_ano); }],
+      ["Retorno do investimento (anos)", function (c) { return c.payback_anos ? nf(c.payback_anos, 1) : "—"; }],
+      ["Custo total em 10 anos", function (c) { return rs(c.custo_total_10_anos); }]
+    ];
+    $("#tabela").innerHTML = "<thead><tr><th>Indicador</th>" + cols.map(function (k) { return '<th class="' + (k === "A3" ? "rec" : "") + '">' + NOME_CEN[k] + (k === "A3" ? '<br><span class="chip-rec">Recomendada</span>' : "") + "</th>"; }).join("") + "</tr></thead><tbody>" +
+      lin.map(function (l) { return "<tr><td>" + l[0] + "</td>" + cols.map(function (k) { return '<td class="' + (k === "A3" ? "rec" : "") + '">' + l[1](C[k]) + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody>";
+  }
+
+  /* ---------- cenas da apresentação ---------- */
+  function ico(nome) {
+    var e = 'fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+    var m = {
+      led: '<svg viewBox="0 0 32 32" ' + e + ' style="color:var(--led)"><path d="M16 4v24M10 28h12M16 6h8l-2 5h-6"/><path d="M19 13l-1.5 4M23 13l1 4" stroke-opacity=".55"/></svg>',
+      solar: '<svg viewBox="0 0 32 32" ' + e + ' style="color:var(--n-solar)"><path d="M16 9v19M10 28h12"/><path d="M8 4h16l-3 6H11z"/><rect x="18" y="16" width="6" height="8" rx="1"/><path d="M20 15v1"/></svg>',
+      quiosque: '<svg viewBox="0 0 32 32" ' + e + ' style="color:var(--n-novo)"><path d="M5 13h22l-3-6H8z"/><path d="M8 13v14M24 13v14M5 27h22"/><path d="M12 10h8" stroke-opacity=".6"/></svg>',
+      ok: '<svg viewBox="0 0 26 26" fill="none" style="color:var(--n-novo)"><circle cx="13" cy="13" r="11" fill="currentColor" fill-opacity=".16"/><path d="M8 13.4l3.4 3.3L18 9.8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      lim: '<svg viewBox="0 0 26 26" fill="none" style="color:var(--n-ink-2)"><circle cx="13" cy="13" r="11" fill="currentColor" fill-opacity=".14"/><path d="M13 7.5v7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="13" cy="18.5" r="1.4" fill="currentColor"/></svg>'
+    };
+    return m[nome];
+  }
+  var GRUPO = ["Matheus Roberto", "Gustavo Oliveira Baptista", "Ana Luísa Santos"];
+
+  var CENAS = {
+    capa: function () {
+      return '<div class="capa-txt">' +
+        '<p class="olho ent">Global Solution 2026.2 · Soluções em Energias Renováveis e Sustentáveis</p>' +
+        '<h1 class="ent" style="--d:90ms">Praça<span>Comunitária</span></h1>' +
+        '<p class="capa-tese ent" style="--d:180ms">Luz eficiente com LED, sensores e energia solar para os ' + P.pontos + " postes da praça</p>" +
+        '<p class="capa-desafio ent" style="--d:240ms">Contribuição de SERS ao Neighborhood Action Dashboard · CitizenTech</p>' +
+        '<div class="capa-grupo ent" style="--d:300ms"><b>Grupo 5</b>' + GRUPO.map(function (g) { return "<span>" + g + "</span>"; }).join("") + "</div></div>" +
+        '<div class="capa-ilus ent" style="--d:120ms"><figure class="fig-praca">' + praca({ id: "pCapa", modo: "led", solar: true, acende: true, rotulo: "Praça à noite com 12 postes LED e painéis no quiosque" }) + "</figure></div>";
+    },
+    problema: function () {
+      var q = 8, pq = POSTES[q];
+      return '<div class="ent"><p class="olho">O espaço e o problema</p><h2>Luz no máximo a noite toda, mesmo com a praça vazia</h2></div>' +
+        '<div class="prob">' +
+          '<figure class="fig-praca ent" style="--d:100ms">' + praca({ id: "pProb", modo: "sodio", queimada: q, rotulo: "Praça de madrugada, vazia, com os postes de vapor de sódio no máximo e um apagado" }) +
+            '<span class="selo" style="left:50%;top:16px;transform:translateX(-50%)"><span class="ponto" style="background:var(--sodio)"></span>02:10 · praça vazia</span>' +
+            '<span class="selo" style="left:' + (((pq[0] + 56) / 752) * 100).toFixed(1) + "%;top:" + (((pq[1] + 56) / 552) * 100).toFixed(1) + '%;transform:translate(-62%,-175%)">Lâmpada queimada: ninguém é avisado</span>' +
+          "</figure>" +
+          "<div>" +
+            '<div class="fatos">' +
+              '<div class="fato n-card ent" style="--d:200ms"><b>' + nf(P.p_atual_w, 0) + "<small>W</small></b><span>por poste: lâmpada de " + nf(P.p_lampada_w, 0) + " W + reator de " + nf(P.p_reator_w, 0) + " W</span></div>" +
+              '<div class="fato n-card ent" style="--d:260ms"><b>' + horasMin(P.horas_noite).replace(" min", "<small>min</small>") + "</b><span>acesas no máximo, todas as noites</span></div>" +
+              '<div class="fato n-card ent" style="--d:320ms"><b>' + nf(P.mercurio_mg, 1) + "<small>mg</small></b><span>de mercúrio em cada lâmpada de vapor de sódio</span></div>" +
+              '<div class="fato n-card ent" style="--d:380ms"><b>0<small>alertas</small></b><span>quando uma lâmpada queima: nenhum monitoramento</span></div>' +
+            "</div>" +
+            '<div class="publico n-card ent" style="--d:440ms"><strong>Quem ganha com a melhoria:</strong> moradores que usam a quadra, caminham ou cruzam a praça à noite, e a prefeitura, que paga a conta da iluminação pública.</div>' +
+          "</div>" +
+        "</div>";
+    },
+    consumo: function () {
+      var t3 = nf(P.horas_noite, 3), e4 = nf(P.e_a0_ponto_dia, 4);
+      return '<div class="ent"><p class="olho">Análise de consumo · situação atual</p><h2>Quanto a praça gasta hoje</h2></div>' +
+        '<div class="consumo">' +
+          '<div class="eq n-card">' +
+            '<div class="eq-linha ent" style="--d:120ms"><span class="eq-rot">Fórmula</span><code>E = (P × t) ÷ 1000</code><span class="eq-nota">E em kWh · P em watts · t em horas</span></div>' +
+            '<div class="eq-linha ent" style="--d:420ms"><span class="eq-rot">Potência</span><code>P = ' + nf(P.p_lampada_w, 0) + " W + " + nf(P.p_reator_w, 0) + " W = " + nf(P.p_atual_w, 0) + ' W</code><span class="eq-nota">lâmpada de vapor de sódio + reator</span></div>' +
+            '<div class="eq-linha ent" style="--d:720ms"><span class="eq-rot">Tempo</span><code>t = ' + horasMin(P.horas_noite) + " = " + t3 + ' h</code><span class="eq-nota">tempo de referência da ANEEL para iluminação pública</span></div>' +
+            '<div class="eq-linha ent" style="--d:1020ms"><span class="eq-rot">Por poste</span><code>E = (' + nf(P.p_atual_w, 0) + " × " + t3 + ") ÷ 1000 = " + e4 + ' kWh</code><span class="eq-nota">por noite</span></div>' +
+            '<div class="eq-linha final ent" style="--d:1320ms"><span class="eq-rot">Praça</span><code>' + e4 + " × " + P.pontos + " × " + P.dias_mes + " = " + nf(C.A0.consumo_rede_kwh_mes, 1) + ' kWh/mês</code><span class="eq-nota">' + P.pontos + " postes × " + P.dias_mes + " noites</span></div>" +
+          "</div>" +
+          '<div class="estim n-card ent" style="--d:1600ms">' +
+            '<p class="rot">Estimativa do mês</p>' +
+            '<p class="grande">' + nf(C.A0.consumo_rede_kwh_mes, 1) + " <small>kWh</small></p>" +
+            "<dl>" +
+              "<div><dt>Tarifa B4a, sem tributos</dt><dd>" + rs(P.tarifa_rs_kwh, 5) + "/kWh</dd></div>" +
+              "<div><dt>Custo por mês</dt><dd>" + rs(C.A0.custo_energia_mes, 2) + "</dd></div>" +
+              "<div><dt>Custo por ano</dt><dd>" + rs(C.A0.custo_energia_ano) + "</dd></div>" +
+              "<div><dt>Emissões</dt><dd>" + nf(C.A0.emissoes_kgco2_ano, 0) + " kg CO₂/ano</dd></div>" +
+            "</dl>" +
+            '<p class="fonte">Tarifa da Enel SP para iluminação pública (REH ANEEL 3.596/2026). Fator médio de emissão do SIN 2024 (MCTI): ' + nf(P.fator_emissao, 4) + " kg CO₂/kWh.</p>" +
+          "</div>" +
+          '<p class="insight n-card ent" style="--d:1900ms">Das ' + nf(P.hora_fim_intenso, 0) + 'h ao amanhecer quase ninguém usa a praça, mas a luz continua no máximo: <b>' + nf(((P.horas_noite - P.horas_uso_intenso) / P.horas_noite) * 100, 0) + "% da energia</b> vai para a madrugada.</p>" +
+        "</div>";
+    },
+    sensor: function () {
+      return '<div class="ent"><p class="olho">A base da solução</p><h2>LED com sensor de presença: luz forte onde tem gente</h2></div>' +
+        '<div class="sensor">' +
+          '<figure class="fig-praca ent" style="--d:100ms">' + praca({ id: "pSensor", modo: "sensor", solar: true, rotulo: "Praça com LED e sensor: os postes perto da pessoa acendem" }) +
+            '<span class="selo" style="left:50%;top:16px;transform:translateX(-50%)"><span class="ponto" style="background:var(--led)"></span>00:40 · depois das ' + nf(P.hora_fim_intenso, 0) + "h</span>" +
+            '<span class="selo" style="right:22px;bottom:22px">Perto de alguém: 100% · sem ninguém: ' + nf(P.dim_pct, 0) + "%</span>" +
+          "</figure>" +
+          '<div class="sensor-dir">' +
+            '<div class="graf-card n-card ent" style="--d:220ms"><h3>Potência dos ' + P.pontos + " postes ao longo da noite (W)</h3>" +
+              '<div class="legenda"><span><i style="background:var(--n-hoje)"></i>Hoje (vapor de sódio)</span><span><i style="background:var(--n-novo)"></i>LED + sensor</span></div>' +
+              '<div class="graf" id="cgNoite"></div></div>' +
+            '<div class="stats">' +
+              '<div class="stat n-card ent" style="--d:340ms"><b>' + nf(P.p_led_w, 0) + " W</b><span>LED de " + nf(P.fluxo_led_lm, 0) + " lm no lugar de " + nf(P.p_atual_w, 0) + " W</span></div>" +
+              '<div class="stat n-card ent" style="--d:420ms"><b class="verde">−' + nf(C.A1.economia_rede_pct, 1) + "%</b><span>de energia em relação a hoje</span></div>" +
+              '<div class="stat n-card ent" style="--d:500ms"><b>' + nf(C.A1.consumo_rede_kwh_mes, 1) + "</b><span>kWh/mês, contra " + nf(C.A0.consumo_rede_kwh_mes, 1) + " hoje</span></div>" +
+            "</div>" +
+          "</div>" +
+        "</div>";
+    },
+    alternativas: function () {
+      function card(k, icone, txt, extra) {
+        var c = C[k];
+        return '<div class="alt n-card ent' + (k === "A3" ? " rec" : "") + '" style="--d:' + extra + 'ms">' +
+          (k === "A3" ? '<span class="chip-rec">Recomendada</span>' : "") +
+          '<div class="alt-topo"><span class="alt-ico">' + ico(icone) + '</span><span class="alt-nome"><span class="cod">' + k + "</span><b>" + ALTS[k].nome + "</b></span></div>" +
+          "<p>" + txt + "</p>" +
+          "<dl>" +
+            "<div><dt>Conta de energia</dt><dd>" + rs(c.custo_energia_mes, 0) + " <small>/mês</small></dd></div>" +
+            "<div><dt>Energia renovável</dt><dd>" + nf(c.participacao_renovavel_pct, 0) + " <small>%</small></dd></div>" +
+            "<div><dt>Investimento</dt><dd>" + mil(c.capex) + "</dd></div>" +
+            "<div><dt>Retorno</dt><dd>" + nf(c.payback_anos, 1) + " <small>anos</small></dd></div>" +
+          "</dl></div>";
+      }
+      return '<div class="ent"><p class="olho">Comparação · mesma luz, mesmo período</p><h2>Três alternativas para a mesma iluminação</h2></div>' +
+        '<div class="alts">' +
+          card("A1", "led", "LED " + nf(P.p_led_w, 0) + " W com sensor e medição, ligado na rede elétrica", 120) +
+          card("A2", "solar", "Mesma luz, com painel de " + nf(P.painel_wp, 0) + " Wp e bateria de lítio em cada poste", 200) +
+          card("A3", "quiosque", "A1 + " + nf(P.kwp_quiosque, 1) + " kWp de painéis no quiosque, compensando na rede", 280) +
+        "</div>" +
+        '<div class="custo10 n-card ent" style="--d:420ms"><div class="cab"><h3>Custo total em ' + P.horizonte_anos + " anos</h3><span>investimento + energia + manutenção, sem correção monetária</span></div>" +
+        '<div class="graf" id="cgCusto"></div></div>';
+    },
+    diagrama: function () {
+      function cam(n, nome, caixas, d, extra) { return '<div class="camada ent" style="--d:' + d + 'ms"><div class="cam-rot"><i>' + n + "</i><b>" + nome + '</b></div><div class="cam-caixas">' + caixas + "</div>" + (extra || "") + "</div>"; }
+      function cx(t, s, cls) { return '<div class="caixa ' + (cls || "") + '"><b>' + t + "</b>" + (s ? "<span>" + s + "</span>" : "") + "</div>"; }
+      return '<div class="ent"><p class="olho">Diagrama de blocos</p><h2>Como a solução funciona</h2></div>' +
+        '<div class="diag">' +
+          cam(1, "Fonte de energia", cx("Rede elétrica Enel SP", "tarifa B4a") + cx("Painéis " + nf(P.kwp_quiosque, 1) + " kWp no quiosque", "A3 · injeta de dia", "solar") + cx("Painel " + nf(P.painel_wp, 0) + " Wp + bateria", "A2 · em cada poste", "solar") + cx("Medidor bidirecional", "kWh usado e injetado"), 100) +
+          cam(2, "Consumo", cx(P.pontos + " luminárias LED de " + nf(P.p_led_w, 0) + " W", "driver dimerizável · sem mercúrio", "larga") + cx("Módulo IoT", "0,5 W por poste"), 240, '<div class="retorno"><span>comando de dimerização</span></div>') +
+          cam(3, "Sensores", cx("Presença", "PIR") + cx("Luz", "fotocélula") + cx("Corrente e tensão", "kWh por poste") + cx("Geração solar", "kWh") + cx("Bateria", "% de carga"), 380) +
+          cam(4, "Lógica", cx("ESP32 em cada poste", "escuro e antes das " + nf(P.hora_fim_intenso, 0) + "h: 100% · depois, sem ninguém: " + nf(P.dim_pct, 0) + "% · presença: 100% · claro: desliga · lâmpada apagada à noite: alerta", "larga"), 520) +
+          cam(5, "Processamento", cx("LoRa / Wi-Fi", "MQTT a cada 15 min") + '<div class="caixa seta">→</div>' + cx("Cálculo dos indicadores", "<code>E = (P × t) ÷ 1000</code>") + '<div class="caixa seta">→</div>' + cx("Histórico", "resultados.json · CSV"), 660) +
+          cam(6, "Dashboard", '<div class="caixa larga"><div class="ind-chips"><span>kWh/mês</span><span>economia %</span><span>R$/mês</span><span>% renovável</span><span>kg CO₂/ano</span><span>h/dia em modo econômico</span></div></div>', 800) +
+        "</div>";
+    },
+    dashboard: function () {
+      return '<div class="dcena-topo ent"><div><p class="olho">Neighborhood Action Dashboard · módulo SERS</p><h2>Indicadores por alternativa</h2></div>' +
+          '<div class="seletor" role="radiogroup" aria-label="Alternativa" id="selCena"></div></div>' +
+        '<p class="alt-desc ent" style="--d:80ms" id="descCena"></p>' +
+        '<div class="tiles ent" style="--d:140ms" id="tilesCena"></div>' +
+        '<div class="dgrafs ent" style="--d:220ms">' +
+          '<div class="graf-card n-card"><h3>Consumo por noite · 30 noites (dados simulados)</h3><div class="legenda"><span><i style="background:var(--n-hoje)"></i>Hoje</span><span><i style="background:var(--n-novo)"></i>LED + sensor</span></div><div class="graf" id="cgMon"></div></div>' +
+          '<div class="graf-card n-card"><h3 id="cgCtxTit"></h3><div class="legenda" id="cgCtxLeg"></div><div class="graf" id="cgCtx"></div></div>' +
+        "</div>";
+    },
+    beneficios: function () {
+      function li(icone, t, s) { return "<li>" + ico(icone) + "<div>" + t + "<span>" + s + "</span></div></li>"; }
+      return '<div class="ent"><p class="olho">Resultados esperados</p><h2>Benefícios e limitações</h2></div>' +
+        '<div class="bl">' +
+          '<div class="bl-col n-card ent" style="--d:120ms"><h3>' + ico("ok") + "Benefícios</h3><ul>" +
+            li("ok", "Menos gasto", rs(C.A3.economia_rs_mes, 0) + " por mês a menos com a A3 (energia e manutenção)") +
+            li("ok", "Menos energia da rede", "−" + nf(C.A1.economia_rede_pct, 0) + "% com LED e sensores; " + nf(C.A3.participacao_renovavel_pct, 0) + "% renovável na A3") +
+            li("ok", "Luz branca quando tem gente", "mais segurança para quem usa a praça à noite") +
+            li("ok", "Aviso automático de falha", "o poste avisa quando apaga, sem depender de reclamação") +
+            li("ok", "Fim do mercúrio", nf(P.mercurio_mg, 1) + " mg a menos por lâmpada trocada") +
+          "</ul></div>" +
+          '<div class="bl-col n-card ent" style="--d:240ms"><h3>' + ico("lim") + "Limitações</h3><ul>" +
+            li("lim", "A praça é um caso de referência", "número de postes, horários e presença são estimativas") +
+            li("lim", "Preços são estimativas", "valores de varejo, não um orçamento de licitação") +
+            li("lim", "Sem energia na rede, a A3 apaga", "o inversor desliga por segurança durante a falta de energia") +
+            li("lim", "Precisa de medidor", "sem medição, a dimerização não aparece na conta") +
+            li("lim", "Regras da compensação mudam", "Lei 14.300: o crédito da energia solar diminui até 2028") +
+          "</ul></div>" +
+        "</div>";
+    },
+    fim: function () {
+      return '<div class="fim">' +
+        '<p class="olho ent">Praça Comunitária · Grupo 5</p>' +
+        '<h2 class="ent" style="--d:80ms">Obrigado!</h2>' +
+        '<div class="fim-nums">' +
+          '<div class="n-card ent" style="--d:160ms"><b class="verde">−' + nf(C.A1.economia_rede_pct, 0) + "%</b><span>de energia da rede com LED e sensores</span></div>" +
+          '<div class="n-card ent" style="--d:220ms"><b class="verde">' + nf(C.A3.participacao_renovavel_pct, 0) + "%</b><span>de energia renovável na alternativa A3</span></div>" +
+          '<div class="n-card ent" style="--d:280ms"><b>' + mil(economia10) + "</b><span>a menos em " + P.horizonte_anos + " anos, comparando a A3 com hoje</span></div>" +
+          '<div class="n-card ent" style="--d:340ms"><b>' + nf(C.A3.payback_anos, 1) + " anos</b><span>para o investimento da A3 se pagar</span></div>" +
+        "</div>" +
+        '<div class="fim-rodape ent" style="--d:420ms"><span>' + GRUPO.join(" · ") + "</span><span>Projeções a partir das premissas do grupo · dados, cálculos e código no GitHub</span></div>" +
+      "</div>";
+    }
+  };
+  var ORDEM_PADRAO = ["capa", "problema", "consumo", "sensor", "alternativas", "diagrama", "dashboard", "beneficios", "fim"];
+  var cenas = (R.cenas && R.cenas.length ? R.cenas.map(function (c) { return c.id; }) : ORDEM_PADRAO).filter(function (id) { return CENAS[id]; });
+  var falaDe = {};
+  (R.cenas || []).forEach(function (c) { falaDe[c.id] = c; });
+
+  var palco = $("#palco");
+  palco.innerHTML = cenas.map(function (id) { return '<section class="cena cena-' + id + '" data-id="' + id + '" aria-label="' + ((falaDe[id] && falaDe[id].titulo) || id) + '">' + CENAS[id]() + "</section>"; }).join("");
+  var secoes = $$(".cena", palco);
+
+  var est = { cena: 0, altCena: "A3", ativo: false };
+  function desenharCenaDash() {
+    var sel = $("#selCena"); if (!sel) return;
+    sel.innerHTML = seletorHTML(est.altCena);
+    $("#descCena").textContent = descAlt(est.altCena);
+    $("#tilesCena").innerHTML = tilesHTML(est.altCena);
+    var opt = { W: 700, H: 300, fs: 15 };
+    grafMon($("#cgMon"), opt);
+    var tit = $("#cgCtxTit"), leg = $("#cgCtxLeg"), el = $("#cgCtx");
+    if (est.altCena === "A1") {
+      tit.textContent = "Potência dos " + P.pontos + " postes numa noite (W)";
+      leg.innerHTML = '<span><i style="background:var(--n-hoje)"></i>Hoje</span><span><i style="background:var(--n-novo)"></i>LED + sensor</span>';
+      grafNoite(el, opt);
+    } else if (est.altCena === "A2") {
+      tit.textContent = "Carga da bateria de um poste solar (%) · simulado";
+      leg.innerHTML = '<span><i style="background:var(--n-solar)"></i>Carga no fim do dia</span><span><i class="linha" style="background:var(--n-ink-2)"></i>Limite de descarga (10%)</span>';
+      grafSoc(el, opt);
+    } else {
+      tit.textContent = "Geração dos painéis do quiosque (kWh/dia) · simulado";
+      leg.innerHTML = '<span><i style="background:var(--n-solar)"></i>Geração</span><span><i class="linha" style="background:var(--n-ink-2)"></i>Consumo médio da iluminação por noite</span>';
+      grafFv(el, opt);
+    }
+  }
+  function escolherAlt(k) {
+    if (est.ativo && cenas[est.cena] === "dashboard") { est.altCena = k; desenharCenaDash(); }
+    else if (!est.ativo && !$("#vPainel").hidden) { altPainel = k; desenharPainel(); }
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-alt]"); if (!b) return;
+    if (b.closest("#palco")) { est.altCena = b.dataset.alt; desenharCenaDash(); }
+    else { altPainel = b.dataset.alt; desenharPainel(); }
+  });
+
+  function aoEntrar(id, sec) {
+    pararAnim();
+    if (id === "sensor") { animarSensor($("svg.praca", sec)); grafNoite($("#cgNoite"), { W: 700, H: 300, fs: 15 }); }
+    if (id === "alternativas") grafCusto($("#cgCusto"), { W: 1420, fs: 16, rowH: 44, pl: 250 });
+    if (id === "dashboard") { est.altCena = "A3"; desenharCenaDash(); }
+  }
+  function ir(i, forcar) {
+    i = Math.max(0, Math.min(cenas.length - 1, i));
+    if (i === est.cena && !forcar) return;
+    secoes.forEach(function (s) { s.classList.remove("ativa"); });
+    est.cena = i;
+    var s = secoes[i];
+    void s.offsetWidth;
+    s.classList.add("ativa");
+    aoEntrar(cenas[i], s);
+    $("#ctr").textContent = (i + 1) + " / " + cenas.length;
+    $("#prog").style.width = ((i + 1) / cenas.length) * 100 + "%";
+    crono.cenaInicio = tempoTotal();
+    atualizarTP(true);
+  }
+  function prox() { if (!crono.rodando && crono.acum === 0 && est.cena === 0) iniciarCrono(); ir(est.cena + 1); }
+  function ant() { ir(est.cena - 1); }
+
+  function escala() {
+    var w = innerWidth, h = innerHeight;
+    palco.style.setProperty("--s", Math.min(w / 1600, h / 900).toFixed(4));
+  }
+
+  /* ---------- cronômetro e roteiro (teleprompter) ---------- */
+  var crono = { rodando: false, t0: 0, acum: 0, cenaInicio: 0 };
+  function tempoTotal() { return (crono.acum + (crono.rodando ? performance.now() - crono.t0 : 0)) / 1000; }
+  function iniciarCrono() { if (crono.rodando) return; crono.rodando = true; crono.t0 = performance.now(); crono.cenaInicio = tempoTotal(); atualizarTP(true); }
+  function pausarCrono() { if (!crono.rodando) return; crono.acum += performance.now() - crono.t0; crono.rodando = false; atualizarTP(true); }
+  function zerarCrono() { crono = { rodando: false, t0: 0, acum: 0, cenaInicio: 0 }; atualizarTP(true); }
+
+  function tpEsqueleto() {
+    return '<div class="tp-topo"><div><span class="tp-cena" data-tp="num"></span><span class="tp-tit" data-tp="tit"></span></div>' +
+      '<div class="tp-tempo">total <b data-tp="total">0:00</b> / ' + mmss(R.limite_s || 180) + '<br>cena <b data-tp="cena">0:00</b> · meta <span data-tp="meta"></span></div></div>' +
+      '<p class="tp-fala" data-tp="fala"></p>' +
+      '<p class="tp-acao" data-tp="acao"></p>' +
+      '<div class="tp-botoes"><button type="button" data-tp-b="ant">← Anterior</button><button type="button" class="prim" data-tp-b="prox">Próxima →</button>' +
+      '<button type="button" data-tp-b="crono">Iniciar cronômetro</button><button type="button" data-tp-b="zerar">Zerar</button>' +
+      '<button type="button" data-tp-b="menor" aria-label="Diminuir letra">A−</button><button type="button" data-tp-b="maior" aria-label="Aumentar letra">A+</button></div>' +
+      '<p class="tp-prox" data-tp="prox"></p>' +
+      '<p class="tp-ajuda">Teclas: → próxima · ← anterior · 1, 2 e 3 escolhem a alternativa na cena 7 · Home volta ao início</p>';
+  }
+  var tpJanela = null, tpFonte = +(ler("sers-tp-fonte") || 0) || 28;
+  function raizesTP() {
+    var r = [];
+    if (tpJanela && !tpJanela.closed) { var t = tpJanela.document.getElementById("tp"); if (t) r.push(t); }
+    if (!$("#gaveta").hidden) r.push($("#tpGaveta"));
+    return r;
+  }
+  function atualizarTP(tudo) {
+    var raizes = raizesTP(); if (!raizes.length) return;
+    var id = cenas[est.cena], f = falaDe[id] || { titulo: id, fala: "", acao: "", segundos: 0 };
+    var prx = cenas[est.cena + 1], fp = prx ? falaDe[prx] : null;
+    var total = tempoTotal(), naCena = total - crono.cenaInicio, lim = R.limite_s || 180;
+    raizes.forEach(function (r) {
+      var q = function (k) { return r.querySelector('[data-tp="' + k + '"]'); };
+      if (tudo) {
+        q("num").textContent = "Cena " + (est.cena + 1) + " de " + cenas.length;
+        q("tit").textContent = f.titulo;
+        q("fala").innerHTML = deixas(f.fala || "(sem fala para esta cena)");
+        q("acao").textContent = "Na tela: " + (f.acao || "");
+        q("meta").textContent = "≈ " + (f.segundos || 0) + " s";
+        q("prox").innerHTML = fp ? "<b>A seguir · " + fp.titulo + ":</b> " + fp.fala.replace(/\[[^\]]+\]\s*/g, "").split(/(?<=[.!?])\s/)[0] : "<b>Última cena.</b> Depois de falar, espere 2 segundos e pare a gravação.";
+        var bc = r.querySelector('[data-tp-b="crono"]'); bc.textContent = crono.rodando ? "Pausar cronômetro" : (crono.acum ? "Continuar cronômetro" : "Iniciar cronômetro");
+        r.style.setProperty("--tp-fs", tpFonte + "px");
+      }
+      var bt = q("total"); bt.textContent = mmss(total); bt.className = total > lim ? "estouro" : total > lim - 15 ? "alerta" : "";
+      var bce = q("cena"); bce.textContent = mmss(naCena); bce.className = f.segundos && naCena > f.segundos + 4 ? "alerta" : "";
+    });
+  }
+  setInterval(function () { if (crono.rodando) atualizarTP(false); }, 250);
+
+  function ligarTP(raiz, doc) {
+    raiz.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-tp-b]"); if (!b) return;
+      var a = b.dataset.tpB;
+      if (a === "prox") prox();
+      else if (a === "ant") ant();
+      else if (a === "crono") crono.rodando ? pausarCrono() : iniciarCrono();
+      else if (a === "zerar") zerarCrono();
+      else if (a === "maior" || a === "menor") { tpFonte = Math.max(18, Math.min(48, tpFonte + (a === "maior" ? 2 : -2))); guardar("sers-tp-fonte", tpFonte); atualizarTP(true); }
+    });
+    if (doc) doc.addEventListener("keydown", teclas);
+  }
+  ligarTP($("#tpGaveta"));
+  $("#tpGaveta").innerHTML = tpEsqueleto();
+
+  var TP_CSS = "body{margin:0;background:#0a1120;color:#eef2f8;font:400 18px/1.5 'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif}" +
+    ".tp{padding:22px 26px 28px;display:grid;gap:16px}.tp-topo{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:space-between}" +
+    ".tp-cena{font:600 13px/1.2 'Public Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#a9b5c8}" +
+    ".tp-tit{font:700 32px/1.05 'Barlow Condensed','Arial Narrow',sans-serif;display:block;margin-top:4px}" +
+    ".tp-tempo{font:500 15px/1.5 'IBM Plex Mono',ui-monospace,monospace;color:#a9b5c8;text-align:right}.tp-tempo b{color:#eef2f8;font-weight:500}.alerta{color:#ffad33!important}.estouro{color:#ff7a7a!important}" +
+    ".tp-fala{font-size:var(--tp-fs,28px);line-height:1.5;margin:0;text-wrap:pretty}" +
+    ".deixa{display:inline-block;font:700 .62em/1 'Public Sans',sans-serif;letter-spacing:.05em;text-transform:uppercase;background:#ffad33;color:#0a1120;border-radius:6px;padding:.38em .55em;vertical-align:.18em;white-space:nowrap}" +
+    ".tp-acao{font-size:15px;color:#a9b5c8;margin:0}.tp-prox{border-top:1px solid #22304a;padding-top:12px;font-size:15px;color:#a9b5c8;margin:0}.tp-prox b{color:#eef2f8}" +
+    ".tp-botoes{display:flex;flex-wrap:wrap;gap:8px}.tp-botoes button{background:#152139;border:1px solid #22304a;color:#eef2f8;border-radius:10px;padding:10px 14px;cursor:pointer;font:600 15px/1 'Public Sans',sans-serif}" +
+    ".tp-botoes button.prim{background:#e6eeff;color:#0a1120;border-color:transparent}.tp-ajuda{font-size:13px;color:#74819a;margin:0}button:focus-visible{outline:2px solid #6aa7f0;outline-offset:2px}";
+  function fontesParaJanela() {
+    var css = "";
+    try {
+      Array.prototype.forEach.call(document.styleSheets, function (folha) {
+        Array.prototype.forEach.call(folha.cssRules || [], function (r) { if (r.type === 5) css += r.cssText + "\n"; });
+      });
+    } catch (e) { css = ""; }
+    if (css) return "<style>" + css + "</style>";
+    try { return '<link rel="stylesheet" href="' + new URL("fontes.css", location.href).href + '">'; } catch (e) { return ""; }
+  }
+  function abrirRoteiro() {
+    if (tpJanela && !tpJanela.closed) { try { tpJanela.focus(); } catch (e) {} return; }
+    var w = null;
+    try { w = window.open("", "sers_roteiro", "popup=yes,width=860,height=860"); } catch (e) { w = null; }
+    if (w) {
+      try {
+        w.document.open();
+        w.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Roteiro · Praça Comunitária</title>' +
+          fontesParaJanela() +
+          "<style>" + TP_CSS + '</style></head><body><div class="tp" id="tp">' + tpEsqueleto() + "</div></body></html>");
+        w.document.close();
+        ligarTP(w.document.getElementById("tp"), w.document);
+        tpJanela = w;
+        $("#gaveta").hidden = true;
+        atualizarTP(true);
+        avisar("Roteiro aberto em outra janela. Coloque-a ao lado ou no segundo monitor e grave só esta janela.");
+        return;
+      } catch (e) { try { w.close(); } catch (e2) {} }
+    }
+    $("#gaveta").hidden = !$("#gaveta").hidden;
+    atualizarTP(true);
+    if (!$("#gaveta").hidden) avisar("Não deu para abrir outra janela aqui, então o roteiro abriu ao lado. Aperte R para fechar.", 5200);
+  }
+
+  /* ---------- tela cheia, barra e cursor ---------- */
+  function telaCheia() {
+    var el = document.documentElement;
+    if (document.fullscreenElement) { document.exitFullscreen && document.exitFullscreen(); return; }
+    var p = el.requestFullscreen ? el.requestFullscreen() : null;
+    if (p && p.catch) p.catch(function () { avisar("A tela cheia foi bloqueada aqui. Aperte F11 no teclado."); });
+    else if (!p) avisar("Aperte F11 no teclado para a tela cheia.");
+  }
+  var ociosoT;
+  function acorda() {
+    var a = $("#vApres"); a.classList.remove("ocioso");
+    clearTimeout(ociosoT);
+    ociosoT = setTimeout(function () { if (!$("#barra").matches(":hover")) a.classList.add("ocioso"); }, 2200);
+  }
+  function alternaBarra() {
+    var a = $("#vApres"); a.classList.toggle("limpo");
+    avisar(a.classList.contains("limpo") ? "Barra escondida. Aperte H para mostrar de novo." : "Barra visível.", 2600);
+  }
+
+  function teclas(e) {
+    if (!est.ativo) {
+      if (!$("#vPainel").hidden && ["1", "2", "3"].indexOf(e.key) >= 0) escolherAlt("A" + e.key);
+      return;
+    }
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var k = e.key;
+    if (k === "ArrowRight" || k === "PageDown" || k === " " || k === "Enter") { e.preventDefault(); prox(); }
+    else if (k === "ArrowLeft" || k === "PageUp" || k === "Backspace") { e.preventDefault(); ant(); }
+    else if (k === "Home") { e.preventDefault(); ir(0); }
+    else if (k === "End") { e.preventDefault(); ir(cenas.length - 1); }
+    else if (k === "1" || k === "2" || k === "3") { if (cenas[est.cena] === "dashboard") { est.altCena = "A" + k; desenharCenaDash(); } }
+    else if (k === "r" || k === "R") { e.preventDefault(); abrirRoteiro(); }
+    else if (k === "f" || k === "F") { e.preventDefault(); telaCheia(); }
+    else if (k === "h" || k === "H") { e.preventDefault(); alternaBarra(); }
+    else if (k === "Escape") { $("#gaveta").hidden = true; }
+  }
+  document.addEventListener("keydown", teclas);
+
+  $("#bProx").addEventListener("click", prox);
+  $("#bAnt").addEventListener("click", ant);
+  $("#bRoteiro").addEventListener("click", abrirRoteiro);
+  $("#bTela").addEventListener("click", telaCheia);
+  $("#bLimpo").addEventListener("click", alternaBarra);
+  $("#bSair").addEventListener("click", function () {
+    if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen();
+    location.hash = "painel";
+  });
+  $("#vApres").addEventListener("mousemove", acorda);
+
+  /* ---------- rotas: #painel, #apresentacao, #roteiro ---------- */
+  function rota() {
+    var h = location.hash.replace("#", "");
+    var apres = h === "apresentacao", roteiro = h === "roteiro";
+    $("#vPainel").hidden = apres || roteiro;
+    $("#vRoteiro").hidden = !roteiro;
+    $("#vApres").hidden = !apres;
+    document.documentElement.classList.toggle("apresentando", apres);
+    if (apres) {
+      est.ativo = true; escala();
+      var q = parseInt(new URLSearchParams(location.search).get("cena"), 10);
+      ir(isNaN(q) ? est.cena : q - 1, true);
+      acorda();
+      if (new URLSearchParams(location.search).get("gaveta") === "1") { $("#gaveta").hidden = false; atualizarTP(true); }
+    } else {
+      est.ativo = false; pararAnim();
+      if (!$("#gaveta").hidden) $("#gaveta").hidden = true;
+      if (!roteiro) { scrollTo(0, 0); }
+    }
+    if (roteiro) scrollTo(0, 0);
+  }
+  addEventListener("hashchange", rota);
+  var redesenhoT;
+  addEventListener("resize", function () {
+    if (est.ativo) { escala(); return; }
+    clearTimeout(redesenhoT); redesenhoT = setTimeout(graficosPainel, 200);
+  });
+  document.addEventListener("fullscreenchange", function () { if (est.ativo) escala(); });
+
+  /* ---------- roteiro (lista) ---------- */
+  function roteiroLista() {
+    $("#rotSub").textContent = cenas.length + " cenas · duração estimada " + mmss(R.total_s || 0) + " · limite do vídeo " + mmss(R.limite_s || 180) + ". Cada cena é uma tela da apresentação; os números das falas vêm do mesmo cálculo da tela.";
+    $("#listaFalas").innerHTML = (R.cenas || []).map(function (c) {
+      return '<li class="fala-item"><span class="fala-num">' + c.n + '</span><div class="fala-cab"><h3>' + c.titulo + '</h3><span class="fala-tempo">≈ ' + c.segundos + " s · começa em " + mmss(c.inicio_s) + '</span></div><p class="fala-acao">Na tela: ' + c.acao + '</p><p class="fala-txt">' + deixas(c.fala) + "</p></li>";
+    }).join("");
+  }
+  $("#btnCopiar").addEventListener("click", function () {
+    var txt = (R.cenas || []).map(function (c) { return "CENA " + c.n + " - " + c.titulo.toUpperCase() + " (≈ " + c.segundos + " s)\n" + c.fala; }).join("\n\n");
+    var ok = function () { avisar("Falas copiadas. Cole no celular ou num documento para ler durante a gravação."); };
+    try {
+      navigator.clipboard.writeText(txt).then(ok, function () { selecionarFalas(); });
+    } catch (e) { selecionarFalas(); }
+  });
+  function selecionarFalas() {
+    var r = document.createRange(); r.selectNodeContents($("#listaFalas"));
+    var s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    avisar("Não deu para copiar automaticamente. As falas estão selecionadas: use Ctrl+C.");
+  }
+
+  /* ---------- tema ---------- */
+  var temaSalvo = ler("sers-tema");
+  if (temaSalvo === "dark" || temaSalvo === "light") document.documentElement.dataset.theme = temaSalvo;
+  $("#btnTema").addEventListener("click", function () {
+    var escuro = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.dataset.theme = escuro ? "light" : "dark";
+    guardar("sers-tema", document.documentElement.dataset.theme);
+    graficosPainel();
+  });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", graficosPainel);
+
+  /* ---------- início ---------- */
+  $("#faixaSub").textContent = "Iluminação dos " + P.pontos + " postes de uma praça de bairro em São Paulo: a situação atual, com vapor de sódio, e três alternativas para a mesma luz, com LED, sensores e energia solar.";
+  $("#faixaIlus").innerHTML = '<figure class="fig-praca">' + praca({ id: "pFaixa", modo: "led", solar: true, acende: true, rotulo: "Praça à noite com 12 postes LED e painéis no quiosque" }) + "</figure>";
+  desenharPainel();
+  graficosPainel();
+  tabela();
+  roteiroLista();
+  $("#notaPainel").innerHTML = "Todos os números são <b>projeções condicionadas às premissas</b> do grupo (dados/premissas.json), não resultados garantidos. Tarifa B4a da Enel SP: " + rs(P.tarifa_rs_kwh, 5) + "/kWh (REH ANEEL 3.596/2026, sem tributos). Iluminação de " + horasMin(P.horas_noite) + " por noite, tempo de referência da ANEEL. Fator de emissão do SIN 2024: " + nf(P.fator_emissao, 4) + " kg CO₂/kWh. Os gráficos de monitoramento, bateria e geração usam dados simulados; com os sensores instalados, as mesmas séries passam a vir das medições. Gerado em " + new Date(D.gerado_em + "T12:00").toLocaleDateString("pt-BR") + " por calculos/calculo_energia.py.";
+  rota();
+})();
+</script>
+</body>
+</html>

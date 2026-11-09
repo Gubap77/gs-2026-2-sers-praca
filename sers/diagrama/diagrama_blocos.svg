@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 800" width="1240" height="800" font-family="Inter, 'Segoe UI', Arial, sans-serif">
+  <defs>
+    <marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="setaL" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/>
+    </marker>
+    <style>
+      .t { font-size: 14px; font-weight: 600; fill: #0f172a; }
+      .s { font-size: 11.5px; fill: #475569; }
+      .lab { font-size: 13px; font-weight: 700; fill: #ffffff; letter-spacing: .3px; }
+      .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.2; }
+      .fluxo { stroke: #475569; stroke-width: 1.6; fill: none; marker-end: url(#seta); }
+    </style>
+  </defs>
+
+  <rect width="1240" height="800" fill="#f8fafc"/>
+  <text x="20" y="34" font-size="20" font-weight="700" fill="#0f172a">Praça Comunitária — diagrama de blocos da solução energética</text>
+  <text x="20" y="54" class="s">GS 2026.2 · SERS · Neighborhood Action Dashboard · Grupo 5 — fonte → consumo → sensores → lógica → processamento → indicadores</text>
+
+  <!-- 1 FONTE DE ENERGIA -->
+  <rect x="20" y="72" width="170" height="96" rx="10" fill="#b45309"/>
+  <text x="105" y="114" class="lab" text-anchor="middle">1. FONTE DE</text>
+  <text x="105" y="132" class="lab" text-anchor="middle">ENERGIA</text>
+  <rect x="210" y="72" width="228" height="96" rx="10" class="box"/>
+  <text x="224" y="98" class="t">Rede elétrica Enel SP</text>
+  <text x="224" y="118" class="s">SIN · tarifa B4a</text>
+  <text x="224" y="136" class="s">A0 e A1 (100%) · A3 (noite)</text>
+  <rect x="457" y="72" width="228" height="96" rx="10" class="box" stroke="#16a34a"/>
+  <text x="471" y="98" class="t">Painel FV 200 Wp + bateria</text>
+  <text x="471" y="118" class="s">LiFePO4 12,8 V 100 Ah por poste</text>
+  <text x="471" y="136" class="s">Controlador MPPT · A2 (off-grid)</text>
+  <rect x="704" y="72" width="228" height="96" rx="10" class="box" stroke="#16a34a"/>
+  <text x="718" y="98" class="t">FV 1,6 kWp no quiosque</text>
+  <text x="718" y="118" class="s">Inversor on-grid · injeta de dia</text>
+  <text x="718" y="136" class="s">A3 (compensação Lei 14.300)</text>
+  <rect x="951" y="72" width="229" height="96" rx="10" class="box"/>
+  <text x="965" y="98" class="t">Medidor bidirecional</text>
+  <text x="965" y="118" class="s">Circuito exclusivo da praça</text>
+  <text x="965" y="136" class="s">kWh consumido e injetado</text>
+
+  <!-- 2 CONSUMIDORES -->
+  <rect x="20" y="198" width="170" height="80" rx="10" fill="#c2410c"/>
+  <text x="105" y="234" class="lab" text-anchor="middle">2. EQUIPAMENTOS</text>
+  <text x="105" y="252" class="lab" text-anchor="middle">CONSUMIDORES</text>
+  <rect x="210" y="198" width="640" height="80" rx="10" class="box"/>
+  <text x="224" y="224" class="t">12 luminárias LED 60 W (9.000 lm) — substituem vapor de sódio 100 W + reator (115 W)</text>
+  <text x="224" y="246" class="s">18h–23h: 100% · 23h–amanhecer: 30% sem movimento, 100% com presença</text>
+  <text x="224" y="264" class="s">Driver dimerizável · vida útil 70.000 h · sem mercúrio</text>
+  <rect x="870" y="198" width="310" height="80" rx="10" class="box"/>
+  <text x="884" y="224" class="t">Módulo IoT por poste</text>
+  <text x="884" y="246" class="s">ESP32 + rádio · 0,5 W médio</text>
+  <text x="884" y="264" class="s">12 Wh/dia — entra no cálculo</text>
+
+  <!-- 3 SENSORES -->
+  <rect x="20" y="308" width="170" height="80" rx="10" fill="#0369a1"/>
+  <text x="105" y="344" class="lab" text-anchor="middle">3. SENSORES E</text>
+  <text x="105" y="362" class="lab" text-anchor="middle">DADOS</text>
+  <g>
+    <rect x="210" y="308" width="178" height="80" rx="10" class="box"/>
+    <text x="222" y="334" class="t">Presença (PIR)</text>
+    <text x="222" y="354" class="s">movimento de pessoas</text>
+    <text x="222" y="370" class="s">→ acende 100%</text>
+    <rect x="408" y="308" width="178" height="80" rx="10" class="box"/>
+    <text x="420" y="334" class="t">Fotocélula</text>
+    <text x="420" y="354" class="s">liga ao anoitecer</text>
+    <text x="420" y="370" class="s">desliga ao amanhecer</text>
+    <rect x="606" y="308" width="178" height="80" rx="10" class="box"/>
+    <text x="618" y="334" class="t">Corrente e tensão</text>
+    <text x="618" y="354" class="s">potência real (W)</text>
+    <text x="618" y="370" class="s">kWh por poste</text>
+    <rect x="804" y="308" width="178" height="80" rx="10" class="box"/>
+    <text x="816" y="334" class="t">Estado da bateria</text>
+    <text x="816" y="354" class="s">% de carga (SOC)</text>
+    <text x="816" y="370" class="s">só na A2</text>
+    <rect x="1002" y="308" width="178" height="80" rx="10" class="box"/>
+    <text x="1014" y="334" class="t">Geração FV</text>
+    <text x="1014" y="354" class="s">kWh gerado/injetado</text>
+    <text x="1014" y="370" class="s">A2 e A3</text>
+  </g>
+
+  <!-- 4 LOGICA -->
+  <rect x="20" y="418" width="170" height="80" rx="10" fill="#6d28d9"/>
+  <text x="105" y="454" class="lab" text-anchor="middle">4. LÓGICA DE</text>
+  <text x="105" y="472" class="lab" text-anchor="middle">AUTOMAÇÃO</text>
+  <rect x="210" y="418" width="970" height="80" rx="10" class="box"/>
+  <text x="224" y="444" class="t">Controlador local (ESP32 em cada poste)</text>
+  <text x="224" y="464" class="s">SE escuro E hora &lt; 23h → 100%  ·  SE escuro E hora ≥ 23h E sem presença por 2 min → 30%  ·  SE presença → 100%  ·  SE claro → desliga</text>
+  <text x="224" y="482" class="s">A2: SE bateria &lt; 30% → modo econômico (máx. 50%)  ·  Alarmes: luminária apagada à noite, consumo fora do esperado, bateria baixa</text>
+
+  <!-- 5 PROCESSAMENTO -->
+  <rect x="20" y="528" width="170" height="80" rx="10" fill="#0f766e"/>
+  <text x="105" y="564" class="lab" text-anchor="middle">5. PROCESSAMENTO</text>
+  <text x="105" y="582" class="lab" text-anchor="middle">DAS INFORMAÇÕES</text>
+  <rect x="210" y="528" width="300" height="80" rx="10" class="box"/>
+  <text x="224" y="554" class="t">Envio dos dados</text>
+  <text x="224" y="574" class="s">LoRa/Wi-Fi → gateway da praça</text>
+  <text x="224" y="592" class="s">MQTT a cada 15 min</text>
+  <rect x="545" y="528" width="300" height="80" rx="10" class="box"/>
+  <text x="559" y="554" class="t">Cálculo dos indicadores</text>
+  <text x="559" y="574" class="s">calculo_energia.py · E = (P × t) / 1000</text>
+  <text x="559" y="592" class="s">tarifa, fator de emissão, metas</text>
+  <rect x="880" y="528" width="300" height="80" rx="10" class="box"/>
+  <text x="894" y="554" class="t">Armazenamento</text>
+  <text x="894" y="574" class="s">resultados.json · histórico CSV</text>
+  <text x="894" y="592" class="s">(simulado nesta entrega)</text>
+  <path d="M510 568 H543" class="fluxo"/>
+  <path d="M845 568 H878" class="fluxo"/>
+
+  <!-- 6 DASHBOARD -->
+  <rect x="20" y="638" width="170" height="130" rx="10" fill="#1e293b"/>
+  <text x="105" y="694" class="lab" text-anchor="middle">6. INDICADORES</text>
+  <text x="105" y="712" class="lab" text-anchor="middle">NO DASHBOARD</text>
+  <rect x="210" y="638" width="970" height="130" rx="10" fill="#ffffff" stroke="#1e293b" stroke-width="1.6"/>
+  <text x="224" y="662" class="t">Neighborhood Action Dashboard — módulo SERS</text>
+  <g font-size="12.5">
+    <rect x="224" y="676" width="150" height="40" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+    <text x="234" y="694" font-weight="700" fill="#9a3412">Consumo</text><text x="234" y="709" fill="#9a3412">kWh/mês</text>
+    <rect x="384" y="676" width="150" height="40" rx="8" fill="#ecfdf5" stroke="#6ee7b7"/>
+    <text x="394" y="694" font-weight="700" fill="#065f46">Economia</text><text x="394" y="709" fill="#065f46">kWh/mês e %</text>
+    <rect x="544" y="676" width="150" height="40" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+    <text x="554" y="694" font-weight="700" fill="#1e40af">Custo evitado</text><text x="554" y="709" fill="#1e40af">R$/mês</text>
+    <rect x="704" y="676" width="150" height="40" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+    <text x="714" y="694" font-weight="700" fill="#166534">Renovável</text><text x="714" y="709" fill="#166534">% da energia</text>
+    <rect x="864" y="676" width="150" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+    <text x="874" y="694" font-weight="700" fill="#334155">CO₂ evitado</text><text x="874" y="709" fill="#334155">kg CO₂/ano</text>
+    <rect x="1024" y="676" width="146" height="40" rx="8" fill="#f5f3ff" stroke="#c4b5fd"/>
+    <text x="1034" y="694" font-weight="700" fill="#5b21b6">Modo eficiente</text><text x="1034" y="709" fill="#5b21b6">h/dia dimerizado</text>
+  </g>
+  <text x="224" y="742" class="s">+ comparação A0 × A1 × A2 × A3 · perfil de potência da noite · 30 noites de monitoramento (simulado) · carga da bateria · payback</text>
+  <text x="224" y="758" class="s">Público: moradores, prefeitura/subprefeitura e gestor da praça</text>
+
+  <!-- fluxos verticais -->
+  <path d="M530 168 V196" class="fluxo"/>
+  <path d="M818 168 V196" class="fluxo"/>
+  <path d="M324 168 V196" class="fluxo"/>
+  <path d="M530 278 V306" class="fluxo"/>
+  <path d="M1025 278 V306" class="fluxo"/>
+  <path d="M695 388 V416" class="fluxo"/>
+  <path d="M695 498 V526" class="fluxo"/>
+  <path d="M695 608 V636" class="fluxo"/>
+  <!-- realimentacao: comando de dimerizacao -->
+  <path d="M1182 458 C1212 458 1212 238 1182 238" fill="none" stroke="#c2410c" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#setaL)"/>
+  <text x="1222" y="348" font-size="11" fill="#c2410c" transform="rotate(90 1222 348)" text-anchor="middle">comando de dimerização</text>
+</svg>

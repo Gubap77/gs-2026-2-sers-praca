@@ -1,0 +1,310 @@
+{
+  "_descricao": "Premissas do estudo energetico da Praca Comunitaria (SERS - GS 2026.2). Todo valor tem unidade, origem e tipo: 'dado_publico' (fonte consultada), 'catalogo' (ficha tecnica/preco de mercado) ou 'estimativa' (premissa justificada pela equipe). Altere aqui e rode calculos/calculo_energia.py para recalcular tudo.",
+  "praca": {
+    "local": {
+      "valor": "Praca de bairro hipotetica em Sao Paulo/SP (area aprox. 3.000 m2)",
+      "tipo": "estimativa"
+    },
+    "pontos_de_luz": {
+      "valor": 12,
+      "unidade": "pontos",
+      "tipo": "estimativa",
+      "justificativa": "Postes de 5-6 m com espacamento de 12-15 m cobrindo caminhos, quadra e area de convivencia"
+    }
+  },
+  "operacao": {
+    "horas_noite": {
+      "valor": 11.8667,
+      "unidade": "h/dia",
+      "tipo": "dado_publico",
+      "fonte": "ANEEL - tempo diario de referencia para faturamento de iluminacao publica: 11 h 52 min"
+    },
+    "dias_mes": {
+      "valor": 30,
+      "unidade": "dias",
+      "tipo": "estimativa",
+      "justificativa": "Periodo de referencia mensal padrao"
+    },
+    "dias_ano": {
+      "valor": 365,
+      "unidade": "dias",
+      "tipo": "estimativa"
+    },
+    "horizonte_anos": {
+      "valor": 10,
+      "unidade": "anos",
+      "tipo": "estimativa",
+      "justificativa": "Horizonte comum de comparacao entre alternativas"
+    },
+    "horas_uso_intenso": {
+      "valor": 5.0,
+      "unidade": "h/dia",
+      "tipo": "estimativa",
+      "justificativa": "Das 18h as 23h a praca e mais usada (esporte, passagem, convivencia): luz em 100%"
+    },
+    "nivel_dimerizado": {
+      "valor": 0.3,
+      "unidade": "fracao da potencia",
+      "tipo": "estimativa",
+      "justificativa": "Das 23h ao amanhecer, sem movimento, a luminaria fica em 30%"
+    },
+    "fracao_tempo_com_presenca_madrugada": {
+      "valor": 0.2,
+      "unidade": "fracao",
+      "tipo": "estimativa",
+      "justificativa": "Sensor de presenca leva a luminaria a 100% em ~20% do tempo de madrugada"
+    }
+  },
+  "situacao_atual": {
+    "potencia_lampada_vapor_sodio": {
+      "valor": 100,
+      "unidade": "W",
+      "tipo": "catalogo",
+      "fonte": "Philips MASTER SON-T PIA Plus 100W: 10.600 lm, vida mediana 29.000 h, 16,3 mg de mercurio"
+    },
+    "perda_reator": {
+      "valor": 15,
+      "unidade": "W",
+      "tipo": "estimativa",
+      "justificativa": "Reator eletromagnetico tipico consome ~15% da potencia da lampada; conferir a placa do reator real"
+    },
+    "fluxo_luminoso_lampada": {
+      "valor": 10600,
+      "unidade": "lm",
+      "tipo": "catalogo",
+      "fonte": "Philips MASTER SON-T PIA Plus 100W"
+    },
+    "mercurio_por_lampada": {
+      "valor": 16.3,
+      "unidade": "mg",
+      "tipo": "catalogo",
+      "fonte": "Philips MASTER SON-T PIA Plus 100W: conteudo de mercurio 16,3 mg"
+    },
+    "troca_lampada_a_cada_anos": {
+      "valor": 4,
+      "unidade": "anos",
+      "tipo": "catalogo",
+      "fonte": "LEDVANCE NAV-T 100 W SUPER 4Y: vida util de 4 anos com ~11 h/dia"
+    },
+    "custo_troca_lampada": {
+      "valor": 150,
+      "unidade": "R$/troca",
+      "tipo": "estimativa",
+      "justificativa": "Lampada (~R$ 70) + mao de obra com caminhao/escada (~R$ 80)"
+    }
+  },
+  "luminaria_led": {
+    "potencia": {
+      "valor": 60,
+      "unidade": "W",
+      "tipo": "catalogo",
+      "fonte": "Composicao ORSE 13065: luminaria LED 60 W, 9.000 lm, para iluminacao publica decorativa"
+    },
+    "fluxo_luminoso": {
+      "valor": 9000,
+      "unidade": "lm",
+      "tipo": "catalogo",
+      "fonte": "Composicao ORSE 13065"
+    },
+    "vida_util": {
+      "valor": 70000,
+      "unidade": "h",
+      "tipo": "catalogo",
+      "fonte": "Composicao ORSE 13201 (luminaria LED 60 W, vida util 70.000 h)"
+    },
+    "preco": {
+      "valor": 450,
+      "unidade": "R$/un",
+      "tipo": "estimativa",
+      "justificativa": "Luminarias publicas LED com Inmetro/Procel de 100 W custam R$ 415-525 no varejo (Ourolux, Demape); 60 W adotado em R$ 450"
+    }
+  },
+  "monitoramento": {
+    "consumo_modulo_iot": {
+      "valor": 0.5,
+      "unidade": "W (24 h)",
+      "tipo": "estimativa",
+      "justificativa": "ESP32 em modo de baixo consumo + sensor PIR + sensor de corrente/tensao + radio, media continua"
+    },
+    "preco_sensor_iot": {
+      "valor": 200,
+      "unidade": "R$/ponto",
+      "tipo": "estimativa",
+      "justificativa": "ESP32, sensor PIR, sensor de corrente/tensao, fotocelula, caixa estanque e controle de dimerizacao"
+    }
+  },
+  "alt1_led_rede": {
+    "instalacao": {
+      "valor": 150,
+      "unidade": "R$/ponto",
+      "tipo": "estimativa",
+      "justificativa": "Troca da luminaria no poste existente"
+    },
+    "om_anual": {
+      "valor": 10,
+      "unidade": "R$/ponto/ano",
+      "tipo": "estimativa",
+      "justificativa": "Inspecao e manutencao do modulo de monitoramento; LED dura mais que o horizonte"
+    },
+    "custo_medicao": {
+      "valor": 1500,
+      "unidade": "R$",
+      "tipo": "estimativa",
+      "justificativa": "Circuito exclusivo da praca com medidor (bidirecional). Sem medicao, a distribuidora fatura iluminacao publica por estimativa (potencia cadastrada x 11 h 52 min) e a economia da dimerizacao nao aparece na conta; na A3 o mesmo medidor registra a energia injetada"
+    }
+  },
+  "alt2_solar_offgrid": {
+    "hsp_pior_mes": {
+      "valor": 3.8,
+      "unidade": "kWh/m2.dia (h de sol pleno)",
+      "tipo": "dado_publico",
+      "fonte": "Valores CRESESB/SunData para Sao Paulo citados por energiasolarexplicada.com.br (junho = 3,8). Confirmar no SunData com as coordenadas da praca"
+    },
+    "performance_ratio": {
+      "valor": 0.75,
+      "unidade": "fracao",
+      "tipo": "dado_publico",
+      "fonte": "Taxa de desempenho tipica de 0,75 (Zilles, IEE/USP, curso IEE0004)"
+    },
+    "dias_autonomia": {
+      "valor": 2,
+      "unidade": "noites",
+      "tipo": "estimativa",
+      "justificativa": "Dois dias nublados seguidos sem perder iluminacao"
+    },
+    "profundidade_descarga": {
+      "valor": 0.9,
+      "unidade": "fracao",
+      "tipo": "catalogo",
+      "fonte": "Baterias LiFePO4 com BMS permitem uso de ~90% da capacidade"
+    },
+    "eficiencia_bateria": {
+      "valor": 0.95,
+      "unidade": "fracao",
+      "tipo": "catalogo"
+    },
+    "painel_escolhido": {
+      "valor": 200,
+      "unidade": "Wp",
+      "tipo": "estimativa"
+    },
+    "bateria_escolhida_kwh": {
+      "valor": 1.28,
+      "unidade": "kWh (12,8 V x 100 Ah)",
+      "tipo": "catalogo"
+    },
+    "preco_painel_por_wp": {
+      "valor": 2.5,
+      "unidade": "R$/Wp",
+      "tipo": "estimativa",
+      "justificativa": "Varejo BR: modulo 155 Wp por R$ 389,62 (R$ 2,51/Wp); kit 4x450 W por R$ 3.815 (R$ 2,12/Wp)"
+    },
+    "preco_bateria": {
+      "valor": 2000,
+      "unidade": "R$/un",
+      "tipo": "estimativa",
+      "justificativa": "LiFePO4 12,8 V 100 Ah entre R$ 1.063 e R$ 2.883 no varejo BR (Magazine Luiza)"
+    },
+    "preco_controlador_mppt": {
+      "valor": 450,
+      "unidade": "R$/un",
+      "tipo": "estimativa",
+      "justificativa": "Controladores MPPT 20 A de US$ 39 a US$ 88 (PowMr, Renogy) + frete/impostos"
+    },
+    "preco_estrutura_cabos": {
+      "valor": 400,
+      "unidade": "R$/ponto",
+      "tipo": "estimativa",
+      "justificativa": "Suporte do painel no poste, caixa da bateria, cabos e protecoes"
+    },
+    "instalacao": {
+      "valor": 600,
+      "unidade": "R$/ponto",
+      "tipo": "estimativa"
+    },
+    "om_anual": {
+      "valor": 60,
+      "unidade": "R$/ponto/ano",
+      "tipo": "estimativa",
+      "justificativa": "Limpeza do painel e inspecao da bateria"
+    },
+    "reposicao_bateria_ano": {
+      "valor": 10,
+      "unidade": "ano",
+      "tipo": "estimativa",
+      "justificativa": "Conservador: LiFePO4 com ~40% de descarga diaria; reposicao prevista no ano 10"
+    }
+  },
+  "alt3_led_rede_fv_ongrid": {
+    "hsp_media_anual": {
+      "valor": 4.9,
+      "unidade": "kWh/m2.dia",
+      "tipo": "dado_publico",
+      "fonte": "Sao Paulo, plano inclinado ~23 graus: HSP 4,9 (dados CRESESB/SunData citados por solardecasa.com.br). Confirmar no SunData"
+    },
+    "potencia_fv_kwp": {
+      "valor": 1.6,
+      "unidade": "kWp",
+      "tipo": "estimativa",
+      "justificativa": "4 modulos de 400 W na cobertura do quiosque da praca, dimensionados para gerar ~100% do consumo anual da Alternativa 1"
+    },
+    "custo_fv_por_wp_instalado": {
+      "valor": 5.5,
+      "unidade": "R$/Wp",
+      "tipo": "estimativa",
+      "justificativa": "Sistemas residenciais em SP custam R$ 4,0-4,9/Wp instalados (surgepv.com); sistema pequeno adotado mais caro por Wp"
+    },
+    "fracao_tusd_fio_b": {
+      "valor": 0.5,
+      "unidade": "fracao da TUSD",
+      "tipo": "estimativa",
+      "justificativa": "Participacao do Fio B na TUSD B4a nao publicada de forma direta; adotado 50%"
+    },
+    "fio_b_nao_compensado_2026": {
+      "valor": 0.6,
+      "unidade": "fracao",
+      "tipo": "dado_publico",
+      "fonte": "Lei 14.300/2022, art. 27: 60% do Fio B nao compensado em 2026 (75% em 2027, 90% em 2028)"
+    },
+    "om_anual_fv": {
+      "valor": 150,
+      "unidade": "R$/ano",
+      "tipo": "estimativa",
+      "justificativa": "Limpeza dos modulos e inspecao do inversor"
+    }
+  },
+  "tarifa": {
+    "tusd_b4a": {
+      "valor": 259.83,
+      "unidade": "R$/MWh",
+      "tipo": "dado_publico",
+      "fonte": "Enel SP - REH ANEEL 3.596/2026, vigente desde 04/07/2026, subgrupo B4a"
+    },
+    "te_b4a": {
+      "valor": 174.33,
+      "unidade": "R$/MWh",
+      "tipo": "dado_publico",
+      "fonte": "Enel SP - REH ANEEL 3.596/2026, bandeira verde"
+    },
+    "adicional_bandeira_vermelha_1": {
+      "valor": 44.63,
+      "unidade": "R$/MWh",
+      "tipo": "dado_publico",
+      "fonte": "ANEEL: R$ 4,463 a cada 100 kWh na bandeira vermelha patamar 1 (usado so na analise de sensibilidade)"
+    }
+  },
+  "emissoes": {
+    "fator_emissao_sin": {
+      "valor": 0.0545,
+      "unidade": "tCO2/MWh",
+      "tipo": "dado_publico",
+      "fonte": "Fator medio do SIN 2024 (MCTI/SIRENE), citado no Inventario de GEE 2024 do Bradesco"
+    },
+    "fator_emissao_sin_2023": {
+      "valor": 0.0385,
+      "unidade": "tCO2/MWh",
+      "tipo": "dado_publico",
+      "fonte": "MCTI - fator medio anual 2023 (sensibilidade)"
+    }
+  }
+}
