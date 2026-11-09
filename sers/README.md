@@ -46,14 +46,9 @@ sers/
 │   ├── diagrama_blocos.svg          ← diagrama conceitual da solução
 │   └── diagrama_blocos.png
 ├── dashboard/
-│   ├── index.html                   ← módulo SERS: painel + modo apresentação + roteiro
+│   ├── index.html                   ← módulo SERS: painel + modo apresentação
 │   ├── dados.js                     ← números gerados pelo cálculo (lidos pela página)
-│   ├── roteiro.js                   ← falas do vídeo já com os números (lidas pela página)
 │   └── fontes.css                   ← fontes embutidas, para funcionar sem internet
-└── video/
-    ├── falas.json                   ← texto das falas, com os números como {{campos}}
-    ├── gerar_roteiro.py             ← preenche as falas com os números e estima o tempo
-    └── roteiro_video.md             ← roteiro final do vídeo (até 3 min), gerado
 ```
 
 ---
@@ -210,13 +205,12 @@ Todos saem do mesmo cálculo da seção 2 e aparecem no dashboard:
 
 ## 6. Integração ao Neighborhood Action Dashboard
 
-A página [`dashboard/index.html`](dashboard/index.html) tem três vistas, todas lendo os mesmos números de `dados.js`:
+A página [`dashboard/index.html`](dashboard/index.html) tem duas vistas, todas lendo os mesmos números de `dados.js`:
 
 | Vista | Endereço | Para quê |
 |---|---|---|
 | Painel | `index.html` ou `#painel` | o módulo de SERS do Neighborhood Action Dashboard |
-| Apresentação | `#apresentacao` | as 9 cenas do vídeo, em 16:9, com teleprompter |
-| Roteiro | `#roteiro` | as falas de cada cena, com tempo estimado (abre bem no celular) |
+| Apresentação | `#apresentacao` | a análise em 9 telas 16:9, usada no vídeo |
 
 O painel mostra:
 - seletor de alternativa (A1, A2, A3) que atualiza os 7 indicadores;
@@ -228,7 +222,7 @@ O painel mostra:
 
 **Como abrir:** abra `dashboard/index.html` no navegador. Funciona offline, sem servidor nem bibliotecas externas (os gráficos são SVG feitos à mão e as fontes estão embutidas).
 
-**Modo apresentação (vídeo):** botão *Apresentar para o vídeo*. Teclas: **→/←** passam as cenas, **F** tela cheia, **R** abre o roteiro (teleprompter com cronômetro) numa janela separada, **H** esconde a barra, **1/2/3** escolhem a alternativa na cena 7. Cada cena corresponde a uma fala de [`video/roteiro_video.md`](video/roteiro_video.md).
+**Modo apresentação:** botão *Modo apresentação*. Teclas: **→/←** passam as telas, **F** tela cheia, **H** esconde a barra, **1/2/3** escolhem a alternativa na tela do dashboard.
 
 **Como integrar ao dashboard principal:** incorporar a página por `<iframe src="sers/dashboard/index.html">` ou ler os números de `calculos/resultados.json` (mesma estrutura de `window.SERS_DADOS`). Com os sensores instalados, o arquivo `monitoramento_simulado.csv` é substituído pelas medições reais, com as mesmas colunas.
 
@@ -239,7 +233,7 @@ cd sers
 python calculos/calculo_energia.py
 ```
 
-O script lê `dados/premissas.json` e regenera `resultados.json`, `memoria_de_calculo.md`, `monitoramento_simulado.csv` e `dashboard/dados.js`. No final ele chama `video/gerar_roteiro.py`, que coloca os mesmos números nas falas (`dashboard/roteiro.js` e `video/roteiro_video.md`). Para testar outro cenário (outra tarifa, número de postes, HSP etc.), altere a premissa no JSON e rode de novo: painel, apresentação e falas mudam juntos.
+O script lê `dados/premissas.json` e regenera `resultados.json`, `memoria_de_calculo.md`, `monitoramento_simulado.csv` e `dashboard/dados.js`. Para testar outro cenário (outra tarifa, número de postes, HSP etc.), altere a premissa no JSON e rode de novo: painel e apresentação mudam juntos.
 
 ## 8. Limitações da proposta
 

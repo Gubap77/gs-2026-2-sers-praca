@@ -8,8 +8,6 @@ das quatro situacoes (atual + 3 alternativas) e gera:
   - calculos/memoria_de_calculo.md    -> passo a passo das contas
   - dados/monitoramento_simulado.csv  -> 30 noites de monitoramento SIMULADO
   - dashboard/dados.js                -> dados consumidos pelo dashboard
-e, em seguida, chama video/gerar_roteiro.py, que preenche as falas do video
-com estes mesmos numeros (dashboard/roteiro.js e video/roteiro_video.md).
 
 Uso:  python calculos/calculo_energia.py   (a partir da pasta sers/)
 Sem dependencias externas (so biblioteca padrao do Python 3).
@@ -312,9 +310,3 @@ for c in cenarios:
     print(f"{c['codigo']:4}{c['consumo_rede_kwh_mes']:14.1f}{c['economia_rede_pct']:8.1f}{c['custo_energia_mes']:10.2f}"
           f"{c['participacao_renovavel_pct']:9.1f}{c['emissoes_evitadas_kgco2_ano']:11.1f}{c['capex']:11.0f}{pb:>9}{c['custo_total_10_anos']:11.0f}")
 print(f"Solar: painel {p_fv_necessaria_wp:.0f} Wp necessario, bateria {bat_necessaria_kwh:.2f} kWh, autonomia {autonomia_real:.2f} noites; FV quiosque {geracao_ano_a3:.0f} kWh/ano")
-
-# ---------------------------------------------------------------- roteiro do video (mesmos numeros)
-import sys
-sys.path.insert(0, str(BASE / "video"))
-import gerar_roteiro  # noqa: E402
-gerar_roteiro.gerar(BASE)

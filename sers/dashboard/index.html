@@ -384,8 +384,7 @@ html.apresentando, html.apresentando body { overflow: hidden; }
         <h1>Praça Comunitária <em>energia da iluminação</em></h1>
         <p class="faixa-sub" id="faixaSub"></p>
         <div class="acoes">
-          <a class="btn btn-luz" href="#apresentacao"><svg class="icone" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>Apresentar para o vídeo</a>
-          <a class="btn btn-fantasma" href="#roteiro">Roteiro e falas</a>
+          <a class="btn btn-luz" href="#apresentacao"><svg class="icone" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>Modo apresentação</a>
           <button class="btn btn-fantasma" id="btnTema" type="button">Alternar tema</button>
         </div>
       </div>
@@ -455,36 +454,6 @@ html.apresentando, html.apresentando body { overflow: hidden; }
   </main>
 </div>
 
-<!-- ================= ROTEIRO ================= -->
-<div class="vista" id="vRoteiro" hidden>
-  <header class="faixa faixa-curta">
-    <div class="faixa-in">
-      <div>
-        <p class="olho"><a href="#painel" style="text-decoration:none">← Voltar ao painel</a></p>
-        <h1>Roteiro do vídeo</h1>
-        <p class="faixa-sub" id="rotSub"></p>
-        <div class="acoes">
-          <a class="btn btn-luz" href="#apresentacao"><svg class="icone" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>Ensaiar com a apresentação</a>
-          <button class="btn btn-fantasma" id="btnCopiar" type="button">Copiar todas as falas</button>
-        </div>
-      </div>
-    </div>
-  </header>
-  <main class="miolo">
-    <section class="bloco">
-      <h2>Como gravar sem erro</h2>
-      <ol class="passos">
-        <li>Abra o arquivo <b>index.html</b> no Chrome e clique em <b>Apresentar para o vídeo</b>. Aperte <kbd>F</kbd> para a tela cheia.</li>
-        <li>Aperte <kbd>R</kbd>: o roteiro abre numa janela separada. Ponha essa janela ao lado ou no segundo monitor.</li>
-        <li>No roteiro, clique em <b>Iniciar cronômetro</b> e ensaie uma vez. As setas <kbd>→</kbd> <kbd>←</kbd> passam as cenas nas duas janelas.</li>
-        <li>Grave só a janela da apresentação (no OBS: <b>Captura de janela</b>). Na cena 7, aperte <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> quando aparecerem as marcações.</li>
-      </ol>
-    </section>
-    <ol class="falas" id="listaFalas"></ol>
-    <p class="nota">As falas são geradas por <code>video/gerar_roteiro.py</code> com os mesmos números do cálculo. Texto em destaque, como <span class="deixa">clique em A1</span>, é ação na tela e não é para ler. Tempo estimado para uma fala calma; o limite do vídeo é 3:00.</p>
-  </main>
-</div>
-
 <!-- ================= APRESENTAÇÃO ================= -->
 <div class="apres" id="vApres" hidden>
   <div class="palco" id="palco" aria-live="polite"></div>
@@ -510,7 +479,6 @@ html.apresentando, html.apresentando body { overflow: hidden; }
 <div class="dica" id="dica"></div>
 
 <script src="dados.js"></script>
-<script src="roteiro.js"></script>
 <script>
 (function () {
   "use strict";
@@ -1191,7 +1159,7 @@ html.apresentando, html.apresentando body { overflow: hidden; }
     else if (k === "Home") { e.preventDefault(); ir(0); }
     else if (k === "End") { e.preventDefault(); ir(cenas.length - 1); }
     else if (k === "1" || k === "2" || k === "3") { if (cenas[est.cena] === "dashboard") { est.altCena = "A" + k; desenharCenaDash(); } }
-    else if (k === "r" || k === "R") { e.preventDefault(); abrirRoteiro(); }
+    else if ((k === "r" || k === "R") && (R.cenas || []).length) { e.preventDefault(); abrirRoteiro(); }
     else if (k === "f" || k === "F") { e.preventDefault(); telaCheia(); }
     else if (k === "h" || k === "H") { e.preventDefault(); alternaBarra(); }
     else if (k === "Escape") { $("#gaveta").hidden = true; }
@@ -1201,6 +1169,7 @@ html.apresentando, html.apresentando body { overflow: hidden; }
   $("#bProx").addEventListener("click", prox);
   $("#bAnt").addEventListener("click", ant);
   $("#bRoteiro").addEventListener("click", abrirRoteiro);
+  if (!(R.cenas || []).length) $("#bRoteiro").hidden = true;
   $("#bTela").addEventListener("click", telaCheia);
   $("#bLimpo").addEventListener("click", alternaBarra);
   $("#bSair").addEventListener("click", function () {
@@ -1212,9 +1181,9 @@ html.apresentando, html.apresentando body { overflow: hidden; }
   /* ---------- rotas: #painel, #apresentacao, #roteiro ---------- */
   function rota() {
     var h = location.hash.replace("#", "");
-    var apres = h === "apresentacao", roteiro = h === "roteiro";
+    var apres = h === "apresentacao", roteiro = h === "roteiro" && (R.cenas || []).length > 0;
     $("#vPainel").hidden = apres || roteiro;
-    $("#vRoteiro").hidden = !roteiro;
+    if ($("#vRoteiro")) $("#vRoteiro").hidden = !roteiro;
     $("#vApres").hidden = !apres;
     document.documentElement.classList.toggle("apresentando", apres);
     if (apres) {
@@ -1245,7 +1214,7 @@ html.apresentando, html.apresentando body { overflow: hidden; }
       return '<li class="fala-item"><span class="fala-num">' + c.n + '</span><div class="fala-cab"><h3>' + c.titulo + '</h3><span class="fala-tempo">≈ ' + c.segundos + " s · começa em " + mmss(c.inicio_s) + '</span></div><p class="fala-acao">Na tela: ' + c.acao + '</p><p class="fala-txt">' + deixas(c.fala) + "</p></li>";
     }).join("");
   }
-  $("#btnCopiar").addEventListener("click", function () {
+  if ($("#btnCopiar")) $("#btnCopiar").addEventListener("click", function () {
     var txt = (R.cenas || []).map(function (c) { return "CENA " + c.n + " - " + c.titulo.toUpperCase() + " (≈ " + c.segundos + " s)\n" + c.fala; }).join("\n\n");
     var ok = function () { avisar("Falas copiadas. Cole no celular ou num documento para ler durante a gravação."); };
     try {
@@ -1275,7 +1244,7 @@ html.apresentando, html.apresentando body { overflow: hidden; }
   desenharPainel();
   graficosPainel();
   tabela();
-  roteiroLista();
+  if ($("#listaFalas")) roteiroLista();
   $("#notaPainel").innerHTML = "Todos os números são <b>projeções condicionadas às premissas</b> do grupo (dados/premissas.json), não resultados garantidos. Tarifa B4a da Enel SP: " + rs(P.tarifa_rs_kwh, 5) + "/kWh (REH ANEEL 3.596/2026, sem tributos). Iluminação de " + horasMin(P.horas_noite) + " por noite, tempo de referência da ANEEL. Fator de emissão do SIN 2024: " + nf(P.fator_emissao, 4) + " kg CO₂/kWh. Os gráficos de monitoramento, bateria e geração usam dados simulados; com os sensores instalados, as mesmas séries passam a vir das medições. Gerado em " + new Date(D.gerado_em + "T12:00").toLocaleDateString("pt-BR") + " por calculos/calculo_energia.py.";
   rota();
 })();
